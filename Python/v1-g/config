@@ -1,0 +1,6 @@
+[DEFAULT]
+user=ocid1.user.oc1..aaaaaaaavsyoa3ij3kckoel3z5cm464egsimobzoqtqld4mfkv6vyzlkvkoq
+fingerprint=37:65:9d:1d:79:61:4d:d8:8c:c2:e0:63:09:da:60:28
+key_file=adonis@statum.com.br-2025-05-25T18_33_34.474Z.pem
+tenancy=ocid1.tenancy.oc1..aaaaaaaadeiuigyrzamv7xgupdpibbdyzwzhpagc34x35nankgfm7u3uk32a
+region=sa-saopaulo-1
