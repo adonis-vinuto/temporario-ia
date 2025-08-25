@@ -51,6 +51,5 @@ class BaseAgent:
             "output-tokens": last_call_metadata.get("output_tokens", 0),
             "total-tokens": last_call_metadata.get("total_tokens", 0)
         }
-
-        print("response", response)
+        
         return response

@@ -9,7 +9,6 @@ def web_search_tool(query: str) -> str:
     Use esta ferramenta para fazer uma busca geral e avançada na web por informações
     ou eventos. Ela é otimizada para retornar resultados do Brasil.
     """
-    print(f"--- EXECUTANDO BUSCA AVANÇADA PARA: {query} ---")
     
     # Usamos o DDGS() diretamente, nos dando acesso total aos parâmetros
     with DDGS() as ddgs:
@@ -32,7 +31,6 @@ def news_search_tool(query: str) -> str:
     Use esta ferramenta ESPECIFICAMENTE para encontrar as notícias mais recentes
     sobre um tópico, empresa ou pessoa.
     """
-    print(f"--- EXECUTANDO BUSCA DE NOTÍCIAS PARA: {query} ---")
 
     with DDGS() as ddgs:
         resultados = ddgs.news(

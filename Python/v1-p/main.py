@@ -5,7 +5,8 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exceptions import RequestValidationError
 from httpx import HTTPStatusError
-
+from src.infrastructure.limits.resource_limits import limit_request_size_middleware
+from src.api.debug import resource_status_router
 from src.api.debug import agent_cache_router
 from src.api.chat import agent_chat_router
 from src.api.enhance import text_enhancer_router
@@ -44,6 +45,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+#app.middleware("http")(limit_request_size_middleware)
+
 # -------- API Versioning --------
 API_PREFIX = "/api/v1"
 
@@ -54,6 +57,7 @@ app.include_router(text_enhancer_router.router, prefix=API_PREFIX)
 app.include_router(pdf_to_text_router.router, prefix=API_PREFIX)
 app.include_router(agent_komsales_router.router, prefix=API_PREFIX)
 app.include_router(docsort_router.router, prefix=API_PREFIX)
+app.include_router(resource_status_router.router, prefix=API_PREFIX)
 
 # -------- Global Exception Handlers --------
 @app.exception_handler(HTTPStatusError)

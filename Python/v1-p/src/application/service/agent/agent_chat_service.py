@@ -26,8 +26,6 @@ class ChatService:
                 "usage": create_empty_usage()
             }
 
-        logger.info(f"Chat iniciado com agente do tipo: {agent_type.name}")
-
         try:
             # Cria o agente diretamente baseado no tipo
             agent = self._create_agent(agent_type, agent_context.id_agent)

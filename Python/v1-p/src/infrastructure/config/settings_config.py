@@ -10,6 +10,11 @@ class SettingsConfig(BaseSettings):
     LOG_LEVEL: str
     SENDGRID_API_KEY: str
     FROM_EMAIL: str
+    MAX_FILE_SIZE: int = 50 * 1024 * 1024
+    MAX_CHAT_HISTORY: int = 100
+    MAX_MESSAGE_LENGTH: int = 10000
+    MAX_CONCURRENT_OCR: int = 5
+    REQUEST_TIMEOUT: int = 30
 
 # Instância global das configurações
 settings = SettingsConfig()

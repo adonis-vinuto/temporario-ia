@@ -24,11 +24,9 @@ class AgentTypeCache:
             if f"{agent_context.id_organization}-{agent_context.module}-{agent_context.id_agent}" in self._cache:
                 cached_type, timestamp = self._cache[f"{agent_context.id_organization}-{agent_context.module}-{agent_context.id_agent}"]
                 if datetime.now() - timestamp < timedelta(seconds=self._ttl):
-                    print(f"Cache HIT para agente {agent_context.id_organization}-{agent_context.module}-{agent_context.id_agent}")
                     return cached_type
             
             # Se não existe ou expirou, busca da API
-            print(f"Cache MISS para agente {agent_context.id_organization}-{agent_context.module}-{agent_context.id_agent}, buscando da API...")
             agent_type = await self._fetch_from_api(agent_context)
             self._cache[f"{agent_context.id_organization}-{agent_context.module}-{agent_context.id_agent}"] = (agent_type, datetime.now())
             return agent_type
@@ -45,7 +43,6 @@ class AgentTypeCache:
                 data = response.json()
                 return data.get("type", "unknown")
         except Exception as e:
-            print(f"Erro ao buscar tipo do agente {agent_context.id_organization}-{agent_context.module}-{agent_context.id_agent}: {e}")
             return "unknown"
     
     def clear_cache(self):

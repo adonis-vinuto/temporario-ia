@@ -47,7 +47,6 @@ class PDFExtractor:
             
             # Converte PDF para imagens usando pypdfium2
             pdf = pdfium.PdfDocument(io.BytesIO(pdf_bytes))
-            print(pdf)
             n_pages = len(pdf)
             logging.info(f"PDF convertido em {n_pages} páginas")
             

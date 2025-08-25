@@ -48,10 +48,10 @@ coverage.xml
 *.spec
 
 # Docker
-*.pid
-*.pid.lock
-Dockerfile*
-docker-compose*.yml
+# *.pid
+# *.pid.lock
+# Dockerfile*
+# docker-compose*.yml
 
 # OS Files
 .DS_Store

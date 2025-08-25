@@ -1,6 +1,7 @@
 import logging
 import sys
 from src.infrastructure.config.settings_config import settings
+from src.infrastructure.logging.secure_logger import SecureLogger
 
 class LoggingConfigurator:
     """Classe responsável por configurar o sistema de logging."""
@@ -24,10 +25,15 @@ class LoggingConfigurator:
         logging.getLogger("httpx").setLevel(logging.WARNING)
         logging.getLogger("httpcore").setLevel(logging.WARNING)
         logging.getLogger("langchain").setLevel(logging.INFO)
+        
+        # NOVO: Desabilita logs sensíveis de bibliotecas
+        logging.getLogger("groq").setLevel(logging.WARNING)
+        logging.getLogger("sendgrid").setLevel(logging.WARNING)
 
         logger = logging.getLogger(__name__)
         logger.info("Sistema de logging configurado com sucesso")
 
-def get_logger(name: str) -> logging.Logger:
-    """Retorna instância de logger formatado com nome do módulo."""
-    return logging.getLogger(name)
+# ATUALIZADO: Retorna logger seguro
+def get_logger(name: str) -> SecureLogger:
+    """Retorna instância de logger seguro com sanitização automática."""
+    return SecureLogger(name)
