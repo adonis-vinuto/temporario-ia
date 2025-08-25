@@ -1,1 +1,0 @@
-# Komsales tests
