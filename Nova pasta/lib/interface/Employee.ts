@@ -1,0 +1,25 @@
+export interface Employee {
+  employee_id: string;
+  company_name: string;
+  full_name: string;
+  admission_date: Date;
+  termination_date: Date;
+  status_description: string;
+  birth_date: Date;
+  cost_center_name: string;
+  salary: number;
+  complementary_salary: number;
+  salary_effective_date: Date;
+  gender: string;
+  street_address: string;
+  address_number: string;
+  city_name: string;
+  race: string;
+  postal_code: string;
+  company_cod_senior_numemp: number;
+  employee_cod_senior_numcad: number;
+  collaborator_type_code_senior_tipcol: number;
+  status_cod_senior_sitafa: number;
+  cost_center_cod_senior_codccu: number;
+  agent_id: number;
+};
