@@ -1,7 +1,9 @@
+// app/(app)/knowledges/[module]/[id]/page.tsx
 import { getKnowledgeById } from "./api/getKnowledge";
 import { Module } from "@/lib/enums/module";
 import { notFound } from "next/navigation";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { EmployeesTab } from "@/components/EmployeesTab";
 
 export default async function KnowledgesPage({
   params,
@@ -26,17 +28,11 @@ export default async function KnowledgesPage({
             </div>
           </header>
 
-          <Tabs defaultValue="importacoes" className="w-full">
-            <TabsList className="grid w-fit grid-cols-4">
-              <TabsTrigger
-                value="importacoes"
-                className="rounded-l-xl rounded-r-none text-lg"
-              >
-                Importações
-              </TabsTrigger>
+          <Tabs defaultValue="colaboradores" className="w-full">
+            <TabsList className="grid w-fit grid-cols-3">
               <TabsTrigger
                 value="colaboradores"
-                className="rounded-none text-lg"
+                className="rounded-l-xl rounded-r-none text-lg"
               >
                 Colaboradores
               </TabsTrigger>
@@ -54,16 +50,8 @@ export default async function KnowledgesPage({
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="importacoes">
-              <div className="p-4">
-                <h3 className="text-xl font-semibold mb-4">Importações</h3>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="colaboradores">
-              <div className="p-4">
-                <h3 className="text-xl font-semibold mb-4">Colaboradores</h3>
-              </div>
+            <TabsContent value="colaboradores" className="mt-6">
+              <EmployeesTab knowledgeId={id} />
             </TabsContent>
 
             <TabsContent value="historico-salario">
@@ -71,6 +59,7 @@ export default async function KnowledgesPage({
                 <h3 className="text-xl font-semibold mb-4">
                   Histórico do salário
                 </h3>
+                {/* Será implementado posteriormente */}
               </div>
             </TabsContent>
 
@@ -79,6 +68,7 @@ export default async function KnowledgesPage({
                 <h3 className="text-xl font-semibold mb-4">
                   Ficha de pagamentos
                 </h3>
+                {/* Será implementado posteriormente */}
               </div>
             </TabsContent>
           </Tabs>
