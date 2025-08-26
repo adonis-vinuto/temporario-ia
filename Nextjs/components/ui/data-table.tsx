@@ -1,4 +1,3 @@
-
 "use client"
 
 import * as React from "react"
@@ -14,7 +13,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
+import { ChevronDown } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -38,6 +37,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[]
   searchKey?: string
   onAdd?: () => void
+  addButtonText?: string
 }
 
 export function DataTable<TData, TValue>({
@@ -45,6 +45,7 @@ export function DataTable<TData, TValue>({
   data,
   searchKey = "name",
   onAdd,
+  addButtonText = "+ Novo Colaborador",
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
@@ -110,7 +111,7 @@ export function DataTable<TData, TValue>({
           </DropdownMenu>
           {onAdd && (
             <Button onClick={onAdd}>
-              + Novo Colaborador
+              {addButtonText}
             </Button>
           )}
         </div>

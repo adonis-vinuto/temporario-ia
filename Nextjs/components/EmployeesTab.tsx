@@ -245,6 +245,7 @@ export function EmployeesTab({ knowledgeId }: EmployeesTabProps) {
         data={employees}
         searchKey="fullName"
         onAdd={handleCreate}
+        addButtonText="+ Novo Colaborador"
       />
 
       <EmployeeModal
