@@ -25,7 +25,8 @@ export function ModuleSelector() {
             .filter((value) => typeof value === "number")
             .map((moduleValue) => {
               const value = moduleValue as number;
-              const Icon = ModuleIcons[value];
+              // Correção da linha 28 - Adicionar type assertion
+              const Icon = ModuleIcons[value as Module];
               return (
                 <SelectItem
                   key={value}
@@ -34,7 +35,8 @@ export function ModuleSelector() {
                 >
                   <div className="flex items-center gap-2">
                     <Icon className="h-4 w-4" />
-                    {ModuleLabels[value]}
+                    {/* Correção da linha 37 - Adicionar type assertion */}
+                    {ModuleLabels[value as Module]}
                   </div>
                 </SelectItem>
               );

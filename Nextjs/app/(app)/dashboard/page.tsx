@@ -1,5 +1,11 @@
 import AgenteInfo from "@/components/agenteInfo";
 import { User, Calendar, Briefcase, DollarSign, Clock } from "lucide-react";
+import {
+  AgentType,
+  AgentTypeLabel,
+  AgentTypeIcon,
+} from "@/lib/enums/agentType";
+import React from "react";
 
 import {
   Card,
@@ -15,7 +21,6 @@ import {
   getSalaryHistoryForEmployee,
   // getEmployeesByCityForAgent,
 } from "./actions/getDefaultDashboard";
-import { AgentType } from "@/lib/enums/agentType";
 import { EmployeesByCityChart } from "@/components/EmployeesByCityChart";
 import { SalaryProgressionChart } from "@/components/SalaryProgressionChart";
 import EmployeeSelector from "@/components/EmployeeSelector";
@@ -24,6 +29,11 @@ import { format } from "date-fns";
 import { Employee } from "@/lib/interface/Employee";
 import { SalaryHistory } from "@/lib/interface/SalaryHistory";
 // import { EmployeesByCity } from "@/lib/interface/DefaultDashboard";
+
+function getIconForAgentType(agentType: number): React.ReactNode {
+  const Icon = AgentTypeIcon[agentType as AgentType];
+  return Icon ? <Icon className="w-4 h-4" /> : <div className="w-4 h-4" />;
+}
 
 export default async function DashboardPage({
   searchParams,
@@ -116,7 +126,10 @@ export default async function DashboardPage({
                   <AgenteInfo
                     key={index}
                     icon={getIconForAgentType(agentTypeNum)}
-                    name={AgentTypeLabel(agentTypeNum)}
+                    name={
+                      AgentTypeLabel[agentTypeNum as AgentType] ||
+                      "Tipo Desconhecido"
+                    }
                     value={item.interactions_count.toString()}
                   />
                 );
@@ -161,7 +174,7 @@ export default async function DashboardPage({
             <AgenteInfo
               icon={getIconForAgentType(
                 rhAgents.find((agent) => agent.id === Number(agentId))
-                  ?.agent_type || AgentType.RH
+                  ?.agent_type || AgentType.Standard
               )}
               name={
                 rhAgents.find((agent) => agent.id === Number(agentId))?.name ||

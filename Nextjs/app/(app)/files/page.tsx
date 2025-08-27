@@ -7,10 +7,10 @@ import { getFiles } from "./api/getFiles";
 import { useModule } from "@/lib/context/ModuleContext";
 import { CustomCard } from "@/components/ui/custom-card";
 import { Button } from "@/components/ui/button";
-import { DownloadIcon, Ellipsis, Trash2 } from "lucide-react";
+import { DownloadIcon, Trash2, MoreHorizontal } from "lucide-react";
 import { postFile } from "./api/postFile";
 import { deleteFile } from "./api/deleteFile";
-import { DropdownMenu, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuContent } from "@/components/ui/dropdown-menu";
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
 
 export default function FilesPage() {
@@ -83,24 +83,26 @@ export default function FilesPage() {
                         <DownloadIcon size={16} className="mr-2" />
                         Baixar
                       </Button>
-                      <DropdownMenu
-                        trigger={
-                          <Button variant={"ghost"}>
-                            <Ellipsis />
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" className="h-8 w-8 p-0">
+                            <span className="sr-only">Abrir menu</span>
+                            <MoreHorizontal className="h-4 w-4" />
                           </Button>
-                        }
-                      >
-                        <DropdownMenuItem
-                          onClick={() =>
-                            setFileToDelete({
-                              id: file.idFile,
-                              name: file.nameFile,
-                            })
-                          }
-                        >
-                          <Trash2 size={16} className="mr-2 inline" />
-                          Deletar
-                        </DropdownMenuItem>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem
+                            onClick={() =>
+                              setFileToDelete({
+                                id: file.idFile,
+                                name: file.nameFile,
+                              })
+                            }
+                          >
+                            <Trash2 size={16} className="mr-2 inline" />
+                            Deletar
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
                       </DropdownMenu>
                     </div>
                   </div>
