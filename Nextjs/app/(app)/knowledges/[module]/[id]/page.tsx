@@ -6,6 +6,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { EmployeesTab } from "@/components/EmployeesTab";
 import { SalaryHistoryTab } from "@/components/SalaryHistoryTab";
 import { PayrollTab } from "@/components/PayrollTab";
+import { ImportTab } from "@/components/ImportTab";
 
 export default async function KnowledgesPage({
   params,
@@ -31,7 +32,7 @@ export default async function KnowledgesPage({
           </header>
 
           <Tabs defaultValue="colaboradores" className="w-full">
-            <TabsList className="grid w-fit grid-cols-3">
+            <TabsList className="grid w-fit grid-cols-4">
               <TabsTrigger
                 value="colaboradores"
                 className="rounded-l-xl rounded-r-none text-lg"
@@ -46,9 +47,15 @@ export default async function KnowledgesPage({
               </TabsTrigger>
               <TabsTrigger
                 value="ficha-pagamentos"
-                className="rounded-r-xl rounded-l-none text-lg"
+                className="rounded-none text-lg"
               >
                 Ficha de pagamentos
+              </TabsTrigger>
+              <TabsTrigger
+                value="importacao"
+                className="rounded-r-xl rounded-l-none text-lg"
+              >
+                Importação
               </TabsTrigger>
             </TabsList>
 
@@ -62,6 +69,10 @@ export default async function KnowledgesPage({
 
             <TabsContent value="ficha-pagamentos" className="mt-6">
               <PayrollTab knowledgeId={id} />
+            </TabsContent>
+
+            <TabsContent value="importacao" className="mt-6">
+              <ImportTab knowledgeId={id} module={module} />
             </TabsContent>
           </Tabs>
         </main>
