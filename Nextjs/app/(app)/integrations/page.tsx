@@ -3,9 +3,7 @@
 "use client";
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import ErpIntegrations from "./_component/erp-integrations";
-import HcmIntegrations from "./_component/hcm-integrations";
-import TwilioIntegrations from "./_component/twilio-integrations";
+
 //import { RefreshButton } from "@/components/RefreshButton";
 //import { useModalCleanup } from "@/lib/utils/modal-cleanup";
 
@@ -40,15 +38,15 @@ export default function IntegrationsPage() {
           </TabsList>
 
           <TabsContent value="erp">
-            <ErpIntegrations />
+            
           </TabsContent>
 
           <TabsContent value="hcm">
-            <HcmIntegrations />
+            
           </TabsContent>
 
           <TabsContent value="twilio">
-            <TwilioIntegrations />
+            
           </TabsContent>
         </Tabs>
         
