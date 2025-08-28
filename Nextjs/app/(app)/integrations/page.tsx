@@ -1,19 +1,26 @@
+// Nextjs/app/(app)/integrations/page.tsx
+
+"use client";
+
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import CreateIntegration from "./_component/create-integration";
 import ErpIntegrations from "./_component/erp-integrations";
 import HcmIntegrations from "./_component/hcm-integrations";
 import TwilioIntegrations from "./_component/twilio-integrations";
+//import { RefreshButton } from "@/components/RefreshButton";
+//import { useModalCleanup } from "@/lib/utils/modal-cleanup";
 
 export default function IntegrationsPage() {
+  // Ativa limpeza de emergência com Ctrl+Shift+L
+  //useModalCleanup();
+
   return (
     <div className="flex bg-background text-foreground">
       <main className="flex-1 p-10 overflow-y-auto">
         <header className="flex justify-between items-center mb-10">
           <h2 className="text-3xl font-bold">Integrações</h2>
-          <CreateIntegration />
         </header>
 
-        <Tabs defaultValue="perfil" className="w-full">
+        <Tabs defaultValue="erp" className="w-full">
           <TabsList className="grid w-fit grid-cols-3">
             <TabsTrigger
               value="erp"
@@ -44,6 +51,9 @@ export default function IntegrationsPage() {
             <TwilioIntegrations />
           </TabsContent>
         </Tabs>
+        
+        {/* Botão de emergência - remover após resolver o problema */}
+        {/* <RefreshButton /> */}
       </main>
     </div>
   );

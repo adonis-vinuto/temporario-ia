@@ -10,13 +10,13 @@ export default function AgenteInfo({
   return (
     <div className='flex items-center justify-between'>
       <div className='flex items-center gap-3'>
-        <div className='bg-zinc-800 p-2 rounded-full'>{icon}</div>
+        <div className='bg-accent p-2 rounded-full text-accent-foreground'>{icon}</div>
         <div>
-          <p className='font-medium'>{name}</p>
-          <p className='text-xs text-zinc-400'>Last 24h</p>
+          <p className='font-medium text-sidebar-foreground'>{name}</p>
+          <p className='text-xs text-muted-foreground'>Last 24h</p>
         </div>
       </div>
-      <p className='font-bold text-lg'>{value}</p>
+      <p className='font-bold text-lg text-sidebar-foreground'>{value}</p>
     </div>
   );
 }

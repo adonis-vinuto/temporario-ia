@@ -1,14 +1,12 @@
-import { AgentType } from "../enums/agentType";
-
 export interface DefaultDashboard {
-  total_agents: number;
-  total_interactions: number;
-  interactions_by_agent_type: InteractionByAgentType[];
+  "total-agents": number;
+  "total-interactions": number;
+  "interactions-by-agent-type": InteractionByAgentType[];
 }
 
 export interface InteractionByAgentType {
-  agent_type: AgentType;
-  interactions_count: number;
+  "agent-type": number;
+  "interactions-count": number;
 }
 
 export interface EmployeesByCity {

@@ -4,16 +4,16 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import NavItem from "@/components/navItem";
 import {
-  Home,
+  //Home,
   Box,
   UsersRound,
   Layers,
   BookOpen,
   Sliders,
-  Bell,
-  HelpCircle,
+  //Bell,
+  //HelpCircle,
   Settings,
-  MoreVertical,
+  //MoreVertical,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
@@ -22,7 +22,7 @@ import komvos from "@/public/img/Imagem1.png";
 import { ModuleSelector } from "@/components/ModuleSelector";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
+//import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 export default function NavbarEsquerda({
   children,
@@ -71,13 +71,13 @@ export default function NavbarEsquerda({
 
           {/* Navegação principal */}
           <nav className="flex flex-col gap-3 mt-4">
-            <NavItem
+            {/* <NavItem
               label="Home"
               Icon={Home}
               link="/"
               active={pathname === "/"}
               collapsed={isSidebarCollapsed}
-            />
+            /> */}
             <NavItem
               label="Dashboard"
               Icon={Box}
@@ -119,15 +119,17 @@ export default function NavbarEsquerda({
         {/* Rodapé com opções e usuário */}
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
-            <ThemeToggle />
+            {/*<ThemeToggle />*/}
+            {/* 
             <div className="relative">
+              
               <NavItem
                 label="Notificações"
                 Icon={Bell}
                 link="/notifications"
                 active={pathname === "/notifications"}
                 collapsed={isSidebarCollapsed}
-              />
+              /> 
               <span
                 className={`absolute ${
                   isSidebarCollapsed ? "right-1" : "right-4"
@@ -135,14 +137,16 @@ export default function NavbarEsquerda({
               >
                 12
               </span>
+              
             </div>
-            <NavItem
+            */}
+            {/* <NavItem
               label="Suporte"
               Icon={HelpCircle}
               link="/support"
               active={pathname === "/support"}
               collapsed={isSidebarCollapsed}
-            />
+            /> */}
             <NavItem
               label="Configurações"
               Icon={Settings}
@@ -177,7 +181,7 @@ export default function NavbarEsquerda({
                     <div className="text-xs text-white/70">user@email.com</div>
                   </div>
                 </div>
-                <MoreVertical size={18} />
+                {/* <MoreVertical size={18} /> */}
               </>
             )}
           </div>

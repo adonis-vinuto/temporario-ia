@@ -1,12 +1,10 @@
 "use server";
 
 import { DefaultDashboard } from "../../../../lib/interface/DefaultDashboard";
-import { AgenteRh } from "../../../../lib/interface/AgenteRh";
-import { Employee } from "../../../../lib/interface/Employee";
-import { SalaryHistory } from "../../../../lib/interface/SalaryHistory";
+import { Module, ModuleNames } from "../../../../lib/enums/module";
 
-export async function buscarDefaultDashboard(): Promise<DefaultDashboard> {
-  const response = await fetch(`${process.env.API_URL}/dashboard`, {
+export async function buscarDefaultDashboard(module: Module): Promise<DefaultDashboard> {
+  const response = await fetch(`${process.env.API_URL}/api/${ModuleNames[module]}/dashboard`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -21,6 +19,8 @@ export async function buscarDefaultDashboard(): Promise<DefaultDashboard> {
   return dashboard;
 }
 
+// Comentadas temporariamente - APIs ainda não estão prontas
+/*
 export async function buscarRhAgents(): Promise<AgenteRh[]> {
   const response = await fetch(`${process.env.API_URL}/getAgentsRhFunction`, {
     method: "GET",
@@ -71,7 +71,7 @@ export async function getSalaryHistoryForEmployee(id: string):  Promise<SalaryHi
 
   return salaryHistory;
 }
-
+*/
 
 // export async function getEmployeesByCityForAgent(agentId: string): Promise<EmployeesByCity[]> {
 //   const response = await fetch(`${process.env.API_URL}/getEmployeesByCity?agentId=${agentId}`, {
