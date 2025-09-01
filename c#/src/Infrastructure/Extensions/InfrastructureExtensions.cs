@@ -4,6 +4,7 @@ using Application.Interfaces.Services;
 using Infrastructure.Common;
 using Infrastructure.Context;
 using Infrastructure.HttpClient.Handlers;
+using Infrastructure.HttpClient.GemelliAI;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
@@ -36,7 +37,6 @@ public static class InfrastructureExtensions
 
             if (string.IsNullOrEmpty(connectionString))
             {
-
                 throw new InvalidOperationException("Tenant connection string not set.");
             }
 
@@ -76,10 +76,10 @@ public static class InfrastructureExtensions
         services.AddScoped<ISessionRepository, SessionRepository>();
         services.AddScoped<IChatHistoryRepository, ChatHistoryRepository>();
         services.AddScoped<IDashboardRepository, DashboardRepository>();
-        
+
         // SeniorHcmConfig
         services.AddScoped<ISeniorHcmConfigRepository, SeniorHcmConfigRepository>();
-        
+
         // SeniorErpConfig
         services.AddScoped<ISeniorErpConfigRepository, SeniorErpConfigRepository>();
 
@@ -89,9 +89,22 @@ public static class InfrastructureExtensions
         return services;
     }
 
-    public static IServiceCollection AddRefitServices(this IServiceCollection services)
+    public static IServiceCollection AddRefitServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<AuthHeaderHandler>();
+
+        // Cliente GemelliAI - SIMPLES
+        string gemelliAIBaseUrl = configuration["GemelliAISettings:BaseUrl"] ?? "";
+
+        services.AddRefitClient<IGemelliAIClient>()
+            .ConfigureHttpClient(c =>
+            {
+                c.BaseAddress = new Uri(gemelliAIBaseUrl);
+                c.Timeout = TimeSpan.FromSeconds(30);
+                c.DefaultRequestHeaders.Add("Accept", "application/json");
+            });
+
+        services.AddScoped<IGemelliAIService, GemelliAIService>();
 
         services.AddRefitClient<IChatClient>()
             .ConfigureHttpClient(c => c.DefaultRequestHeaders.Add("Accept", "application/json"));
