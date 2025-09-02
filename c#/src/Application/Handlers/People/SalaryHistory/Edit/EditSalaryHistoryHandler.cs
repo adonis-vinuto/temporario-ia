@@ -45,7 +45,7 @@ public class EditSalaryHistoryHandler : BaseHandler
 
         if (request.IdEmployee != null)
         {
-            Domain.Entities.Employee? employee = await _employeeRepository.SearchByIdEmployeeAsync(request.IdEmployee.Value, cancellationToken);
+            Domain.Entities.Employee? employee = await _employeeRepository.SearchByIdEmployeeAsync(request.IdEmployee, cancellationToken);
 
             if (employee is null)
             {

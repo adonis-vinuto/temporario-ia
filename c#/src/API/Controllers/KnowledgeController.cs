@@ -4,6 +4,7 @@ using Application.DTOs.Knowledge;
 using Application.Handlers.Knowledge.AttachToAgent;
 using Application.Handlers.Knowledge.Create;
 using Application.Handlers.Knowledge.Edit;
+using Application.Handlers.Knowledge.ImportExcel;
 using Application.Handlers.Knowledge.Remove;
 using Application.Handlers.Knowledge.Search;
 using Application.Handlers.Knowledge.SearchById;
@@ -26,10 +27,11 @@ public class KnowledgeController : MainController
     private readonly EditKnowledgeHandler _editKnowledgeHandler;
     private readonly AttachToAgentKnowledgeHandler _attachToAgentKnowledgeHandler;
     private readonly RemoveKnowledgeHandler _removeKnowledgeHandler;
+    private readonly ImportExcelKnowledgeHandler _importExcelKnowledgeHandler;
 
     public KnowledgeController(CreateKnowledgeHandler createKnowledgeHandler,
     SearchKnowledgeByIdHandler searchKnowledgeByIdHandler,
-    SearchKnowledgesHandler searchKnowledgesHandler, RemoveKnowledgeHandler removeKnowledgeHandler, EditKnowledgeHandler editKnowledgeHandler, AttachToAgentKnowledgeHandler attachToAgentKnowledgeHandler)
+    SearchKnowledgesHandler searchKnowledgesHandler, RemoveKnowledgeHandler removeKnowledgeHandler, EditKnowledgeHandler editKnowledgeHandler, AttachToAgentKnowledgeHandler attachToAgentKnowledgeHandler, ImportExcelKnowledgeHandler importExcelKnowledgeHandler)
     {
         _createKnowledgeHandler = createKnowledgeHandler;
         _searchKnowledgeByIdHandler = searchKnowledgeByIdHandler;
@@ -37,15 +39,16 @@ public class KnowledgeController : MainController
         _removeKnowledgeHandler = removeKnowledgeHandler;
         _editKnowledgeHandler = editKnowledgeHandler;
         _attachToAgentKnowledgeHandler = attachToAgentKnowledgeHandler;
+        _importExcelKnowledgeHandler = importExcelKnowledgeHandler;
     }
 
     [HttpPost]
     [ProducesResponseType(typeof(KnowledgeResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateKnowledge(
-            [FromRoute] Module module,
-            [FromBody] CreateKnowledgeRequest request,
-            CancellationToken cancellationToken)
+              [FromRoute] Module module,
+              [FromBody] CreateKnowledgeRequest request,
+              CancellationToken cancellationToken)
     {
         ErrorOr<KnowledgeResponse> result = await _createKnowledgeHandler.Handle(request, module, cancellationToken);
 
@@ -127,7 +130,27 @@ public class KnowledgeController : MainController
                 statusCode: MapToHttpStatus(result.FirstError.Type)
             );
         }
-        
+
         return NoContent();
+    }
+
+    // Import Excel
+    [HttpPost("{idKnowledge:guid}/import-excel")]
+    [ProducesResponseType(typeof(KnowledgeResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> ImportExcel(
+            [FromRoute] Module module,
+            [FromRoute] Guid idKnowledge,
+            [FromForm] ImportExcelKnowledgeRequest request,
+            CancellationToken cancellationToken)
+    {
+        request.IdKnowledge = idKnowledge;
+
+        ErrorOr<KnowledgeResponse> result = await _importExcelKnowledgeHandler.Handle(request, module, cancellationToken);
+
+        return result.Match(
+            Knowledge => Ok(Knowledge),
+            errors => Problem(errors)
+        );
     }
 }

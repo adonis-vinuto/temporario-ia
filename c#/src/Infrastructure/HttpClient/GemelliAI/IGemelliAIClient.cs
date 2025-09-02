@@ -6,7 +6,7 @@ namespace Infrastructure.HttpClient.GemelliAI;
 
 public interface IGemelliAIClient
 {
-    [Post("/api/chat-ai/{idOrganization}/{module}/{idAgent}")]
+    [Post("/api/v1/chat-ai/{idOrganization}/{module}/{idAgent}")]
     Task<ChatAIResponse> SendChatMessageAsync(
         [Body] ChatAIRequest request,
         string idOrganization,
@@ -14,7 +14,7 @@ public interface IGemelliAIClient
         string idAgent,
         CancellationToken cancellationToken = default);
 
-    [Post("/api/chat-ai-twilio/{idOrganization}/{module}/{idAgent}")]
+    [Post("/api/v1/chat-ai-twilio/{idOrganization}/{module}/{idAgent}")]
     Task<ChatAITwilioResponse> SendChatMessageTwilioAsync(
         [Body] ChatAITwilioRequest request,
         string idOrganization,
@@ -22,7 +22,7 @@ public interface IGemelliAIClient
         string idAgent,
         CancellationToken cancellationToken = default);
 
-    [Post("/api/text-enhancer")]
+    [Post("/api/v1/text-enhancer")]
     Task<TextEnhancerResponse> EnhanceTextAsync(
         [Body] TextEnhancerRequest request,
         CancellationToken cancellationToken = default);

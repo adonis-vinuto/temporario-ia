@@ -26,20 +26,20 @@ public sealed class SalaryHistoryConfiguration : IEntityTypeConfiguration<Salary
 
         builder.Property(x => x.ChangeDate)
             .HasColumnType("date")
-            .IsRequired();
+            .IsRequired(false);
 
         builder.Property(x => x.NewSalary)
             .IsRequired()
             .HasColumnType("decimal(18,2)");
 
         builder.Property(x => x.EmployeeCodSeniorNumCad)
-            .IsRequired();
+            .IsRequired(false);
 
         builder.Property(x => x.CompanyCodSeniorNumEmp)
-            .IsRequired();
+            .IsRequired(false);
 
         builder.Property(x => x.MotiveCodSeniorCodMot)
-            .IsRequired();
+            .IsRequired(false);
 
     }
 }

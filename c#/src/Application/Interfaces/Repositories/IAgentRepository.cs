@@ -9,7 +9,9 @@ public interface IAgentRepository
 {
     IUnitOfWork UnitOfWork { get; }
     Task<Agent?> SearchByIdAsync(Guid idAgent, string organization, Module module, CancellationToken cancellationToken);
-    Task<List<Agent>> SearchAllAsync(Module module, CancellationToken cancellationToken);
+
+    public void Edit(Agent agent);
+
     Task<PagedResponse<Agent>> PagedSearchAsync(
         string organization,
         Module module,
@@ -17,7 +19,6 @@ public interface IAgentRepository
         int tamanhoPagina,
         CancellationToken cancellationToken
     );
-    Task AddAsync(Agent agent, CancellationToken cancellationToken);
-    void Edit(Agent agent);
-    void Remove(Agent agent);
+
+    public void Remove(Agent agent);
 }

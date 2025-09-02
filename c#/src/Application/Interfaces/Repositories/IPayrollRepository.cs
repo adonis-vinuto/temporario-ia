@@ -13,8 +13,10 @@ public interface IPayrollRepository
 
     Task AddAsync(Payroll payroll, CancellationToken cancellationToken);
 
+    Task AddAsync(IList<Payroll> payrolls, CancellationToken cancellationToken);
+
     Task<Payroll?> SearchByIdAsync(Guid idPayroll, Guid idKnowledge, CancellationToken cancellationToken);
-    
+
     void Edit(Payroll payroll);
 
     Task<PagedResponse<Payroll>> PagedSearchAsync(
@@ -22,6 +24,6 @@ public interface IPayrollRepository
         int pagina,
         int tamanhoPagina,
         CancellationToken cancellationToken);
-    
+
     void Remove(Payroll payroll);
 }

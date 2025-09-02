@@ -4,7 +4,7 @@ namespace Domain.Entities;
 
 public class Payroll : BaseEntity
 {
-    public Guid IdEmployee { get; set; }
+    public string IdEmployee { get; set; }
     public Employee Employee { get; set; }
     public string? PayrollPeriodCod { get; set; }
     public string? EventName { get; set; }
@@ -17,5 +17,6 @@ public class Payroll : BaseEntity
     public string? CompanyCodSeniorNumEmp { get; set; }
     public string? PayrollPeriodCodSeniorCodCal { get; set; }
     public string? EventTypeCodSeniorTipEve { get; set; }
+    public string? EventCodSeniorCodenv { get; set; }
     public string? CalculationTypeCodSeniorTipCal { get; set; }
 }

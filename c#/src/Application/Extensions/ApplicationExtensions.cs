@@ -40,6 +40,7 @@ using Application.Handlers.SeniorErpConfig.Remove;
 using Application.Handlers.SeniorErpConfig.Search;
 using Application.Handlers.SeniorErpConfig.SearchById;
 using Application.Handlers.SeniorHcmConfig.AttachToAgent;
+using Application.Handlers.Knowledge.ImportExcel;
 using Application.Handlers.SeniorHcmConfig.Create;
 using Application.Handlers.SeniorHcmConfig.Edit;
 using Application.Handlers.SeniorHcmConfig.Remove;
@@ -62,6 +63,8 @@ using Application.Handlers.Session.SearchTwilioByIdAgent;
 using Application.Handlers.ChatHistory.SearchByIdAgent;
 using Application.Handlers.Chat.FirstMessage;
 using Application.Handlers.Chat.SendMessage;
+using Application.Handlers.Ai.Agent.SearchByIdAndOrganization;
+
 
 namespace Application.Extensions;
 
@@ -92,7 +95,6 @@ public static class ApplicationExtensions
         services.AddScoped<RemoveTwilioConfigHandler>();
 
         // Chat
-        services.AddScoped<SendMessageHandler>();
         services.AddScoped<FirstMessageHandler>();
         services.AddScoped<SendChatMessageHandler>();
 
@@ -103,6 +105,9 @@ public static class ApplicationExtensions
         services.AddScoped<EditKnowledgeHandler>();
         services.AddScoped<AttachToAgentKnowledgeHandler>();
         services.AddScoped<RemoveKnowledgeHandler>();
+        
+        // Import Excel
+        services.AddScoped<ImportExcelKnowledgeHandler>();
 
         // Employee
         services.AddScoped<CreateEmployeeHandler>();
@@ -117,7 +122,7 @@ public static class ApplicationExtensions
         services.AddScoped<SearchSalaryHistoryIdKnowledgeHandler>();
         services.AddScoped<EditSalaryHistoryHandler>();
         services.AddScoped<RemoveSalaryHistoryHandler>();
-        
+
         // Payroll
         services.AddScoped<CreatePayrollHandler>();
         services.AddScoped<SearchPayrollHandler>();
@@ -154,12 +159,15 @@ public static class ApplicationExtensions
         // ChatSession
         services.AddScoped<SearchSessionByIdAgentHandler>();
         services.AddScoped<SearchSessionTwilioByIdAgentHandler>();
-        
+
         //Dashboard
         services.AddScoped<GetDashboardHandler>();
-        
+
         // Services
         services.AddScoped<IUserContextService, UserContextService>();
+
+        // Ai
+        services.AddScoped<SearchByIdAndOrganizationHandler>();
 
         return services;
     }

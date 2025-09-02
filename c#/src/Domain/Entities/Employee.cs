@@ -1,9 +1,11 @@
 using Domain.Enums;
+using Domain.Helpers;
 
 namespace Domain.Entities;
 
-public class Employee : BaseEntity
+public class Employee
 {
+    public string Id { get; set; }
     public Guid IdKnowledge { get; set; }
     public Knowledge Knowledge { get; set; }
     public string? CompanyName { get; set; }
@@ -27,5 +29,5 @@ public class Employee : BaseEntity
     public string? CollaboratorTypeCodeSeniorTipeCol { get; set; }
     public string? StatusCodSenior { get; set; }
     public string? CostCenterCodSeniorCodCcu { get; set; }
-
+    public DateTime CreatedAt { get; set; } = DateTimeProvider.DataHoraAtual();
 }

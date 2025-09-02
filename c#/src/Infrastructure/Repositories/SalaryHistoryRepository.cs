@@ -55,6 +55,11 @@ public class SalaryHistoryRepository : ISalaryHistoryRepository
         await _context.SalaryHistories.AddAsync(newSalaryHistory, cancellationToken);
     }
 
+    public async Task AddAsync(IList<SalaryHistory> salaryHistories, CancellationToken cancellationToken)
+    {
+        await _context.SalaryHistories.AddRangeAsync(salaryHistories, cancellationToken);
+    }
+
     public void RemoveSalaryHistoryByIdAndIdKnowledge(SalaryHistory salaryHistory, CancellationToken cancellationToken)
     {
         _context.SalaryHistories.Remove(salaryHistory);

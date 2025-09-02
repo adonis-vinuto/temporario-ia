@@ -18,52 +18,55 @@ public sealed class PayrollConfiguration : IEntityTypeConfiguration<Payroll>
 
         builder.Property(x => x.IdEmployee)
             .IsRequired();
-        
+
         builder.HasOne(x => x.Employee)
             .WithMany()
             .HasForeignKey(x => x.IdEmployee)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.Property(x => x.PayrollPeriodCod)
-            .IsRequired();
+            .IsRequired(false);
 
         builder.Property(x => x.EventName)
-            .IsRequired()
+            .IsRequired(false)
             .HasMaxLength(200);
 
         builder.Property(x => x.EventAmount)
-            .IsRequired()
+            .IsRequired(false)
             .HasColumnType("decimal(18,2)");
 
         builder.Property(x => x.EventTypeName)
-            .IsRequired()
+            .IsRequired(false)
             .HasMaxLength(100);
 
         builder.Property(x => x.ReferenceDate)
-            .IsRequired()
+            .IsRequired(false)
             .HasColumnType("date");
 
         builder.Property(x => x.CalculationTypeName)
-            .IsRequired()
+            .IsRequired(false)
             .HasMaxLength(200);
 
         builder.Property(x => x.EmployeeCodSeniorNumCad)
-            .IsRequired();
+            .IsRequired(false);
 
         builder.Property(x => x.CollaboratorTypeCodeSeniorTipCol)
-            .IsRequired();
+            .IsRequired(false);
 
         builder.Property(x => x.CompanyCodSeniorNumEmp)
-            .IsRequired();
+            .IsRequired(false);
 
         builder.Property(x => x.PayrollPeriodCodSeniorCodCal)
-            .IsRequired();
+            .IsRequired(false);
 
         builder.Property(x => x.EventTypeCodSeniorTipEve)
-            .IsRequired();
+            .IsRequired(false);
+
+        builder.Property(x => x.EventCodSeniorCodenv)
+            .IsRequired(false);
 
         builder.Property(x => x.CalculationTypeCodSeniorTipCal)
-            .IsRequired();
+            .IsRequired(false);
 
     }
 }

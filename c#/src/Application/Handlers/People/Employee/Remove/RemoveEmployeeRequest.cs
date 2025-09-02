@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace Application.Handlers.People.Employee.Remove;
 
-public sealed record RemoveEmployeeRequest(Guid IdKnowledge,Guid IdEmployee);
+public sealed record RemoveEmployeeRequest(Guid IdKnowledge, string IdEmployee);
 
 public class RemoveEmployeeRequestValidator : AbstractValidator<RemoveEmployeeRequest>
 {

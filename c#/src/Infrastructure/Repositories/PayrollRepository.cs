@@ -28,6 +28,11 @@ public class PayrollRepository : IPayrollRepository
         await _context.Payrolls.AddAsync(payroll, cancellationToken);
     }
 
+    public async Task AddAsync(IList<Payroll> payrolls, CancellationToken cancellationToken)
+    {
+        await _context.Payrolls.AddRangeAsync(payrolls, cancellationToken);
+    }
+
     public async Task<Payroll?> SearchByIdAsync(Guid idPayroll, CancellationToken cancellationToken)
     {
         return await (from p in _context.Payrolls where p.Id == idPayroll select p)
@@ -62,7 +67,7 @@ public class PayrollRepository : IPayrollRepository
                 .AsNoTracking().Where(x => x.Employee.IdKnowledge == idKnowledge);
 
         int total = await query.CountAsync(cancellationToken);
-        
+
         List<Payroll> itens = await query
             .OrderByDescending(x => x.CreatedAt)
             .Skip((pagina - 1) * tamanhoPagina)

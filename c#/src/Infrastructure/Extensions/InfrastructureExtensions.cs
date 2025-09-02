@@ -12,8 +12,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using GemelliApi.Infrastructure.Services;
 using Refit;
-using Infrastructure.HttpClient.IA.Chat;
-using Infrastructure.Repositories.IA;
 
 namespace Infrastructure.Extensions;
 
@@ -67,7 +65,6 @@ public static class InfrastructureExtensions
         services.AddScoped<IDataConfigRepository, DataConfigRepository>();
 
         // Api
-        services.AddScoped<IChatRepository, ChatRepository>();
         services.AddScoped<IAgentRepository, AgentRepository>();
         services.AddScoped<ITwilioConfigRepository, TwilioConfigRepository>();
         services.AddScoped<IKnowledgeRepository, KnowledgeRepository>();
@@ -101,14 +98,11 @@ public static class InfrastructureExtensions
             .ConfigureHttpClient(c =>
             {
                 c.BaseAddress = new Uri(gemelliAIBaseUrl);
-                c.Timeout = TimeSpan.FromSeconds(30);
+                c.Timeout = TimeSpan.FromSeconds(90);
                 c.DefaultRequestHeaders.Add("Accept", "application/json");
             });
 
         services.AddScoped<IGemelliAIService, GemelliAIService>();
-
-        services.AddRefitClient<IChatClient>()
-            .ConfigureHttpClient(c => c.DefaultRequestHeaders.Add("Accept", "application/json"));
 
         return services;
     }

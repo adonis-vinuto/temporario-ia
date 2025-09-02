@@ -28,7 +28,7 @@ public record EditEmployeeRequest(
     string? CostCenterCodSeniorCodccu
 )
 {
-    [JsonIgnore] public Guid Id { get; set; }
+    [JsonIgnore] public string Id { get; set; }
 }
 
 public class EditEmployeeRequestValidator : AbstractValidator<EditEmployeeRequest>

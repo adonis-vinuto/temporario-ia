@@ -18,12 +18,12 @@ public class TenantDbContext : DbContext, IUnitOfWork
 {
     private readonly IUserContextService _userContextService;
     private readonly ITenantProvider _tenantProvider;
-    
+
     public TenantDbContext(DbContextOptions<TenantDbContext> options)
         : base(options)
     {
     }
-    
+
     public TenantDbContext(
         DbContextOptions<TenantDbContext> options,
         IUserContextService userContextService,
@@ -47,7 +47,7 @@ public class TenantDbContext : DbContext, IUnitOfWork
     public DbSet<SeniorHcmConfig> SeniorHcmConfigs { get; set; }
     public DbSet<TwilioConfig> TwilioConfigs { get; set; }
     public DbSet<Log> Logs { get; set; }
-    
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -68,9 +68,9 @@ public class TenantDbContext : DbContext, IUnitOfWork
         }
 
 #if DEBUG
-                optionsBuilder.LogTo(x => Console.WriteLine(x)).EnableSensitiveDataLogging();
+        optionsBuilder.LogTo(x => Console.WriteLine(x)).EnableSensitiveDataLogging();
 #endif
-                base.OnConfiguring(optionsBuilder);
+        base.OnConfiguring(optionsBuilder);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -152,7 +152,7 @@ public class TenantDbContext : DbContext, IUnitOfWork
         {
             Guid? idUser = null;
             LogUser? user = _userContextService.GetUser();
-            
+
             var options = new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,

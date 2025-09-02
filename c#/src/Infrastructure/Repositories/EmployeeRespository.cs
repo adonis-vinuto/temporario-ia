@@ -22,13 +22,18 @@ public class EmployeeRepository : IEmployeeRepository
         await _context.Employees.AddAsync(employee, cancellationToken);
     }
 
-    public async Task<Employee?> SearchByIdAsync(Guid idKnowledge, Guid idEmployee, CancellationToken cancellationToken)
+    public async Task AddAsync(IList<Employee> employees, CancellationToken cancellationToken)
+    {
+        await _context.Employees.AddRangeAsync(employees, cancellationToken);
+    }
+
+    public async Task<Employee?> SearchByIdAsync(Guid idKnowledge, string idEmployee, CancellationToken cancellationToken)
     {
         return await _context.Employees
             .FirstOrDefaultAsync(e => idKnowledge == e.IdKnowledge && e.Id == idEmployee, cancellationToken);
     }
 
-    public async Task<Employee?> SearchByIdEmployeeAsync(Guid idEmployee, CancellationToken cancellationToken)
+    public async Task<Employee?> SearchByIdEmployeeAsync(string idEmployee, CancellationToken cancellationToken)
     {
         return await _context.Employees
             .FirstOrDefaultAsync(e => e.Id == idEmployee, cancellationToken);

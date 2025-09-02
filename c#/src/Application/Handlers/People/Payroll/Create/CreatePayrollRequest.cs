@@ -10,7 +10,7 @@ using System.Data;
 namespace Application.Handlers.People.Payroll.Create;
 
 public record CreatePayrollRequest(
-    Guid IdEmployee,
+    string IdEmployee,
     string? PayrollPeriodCod,
     string? EventName,
     decimal? EventAmount,
@@ -81,6 +81,6 @@ public class CreatePayrollRequestValidator : AbstractValidator<CreatePayrollRequ
 
         When(x => x.CalculationTypeCodSeniorTipCal is not null, () =>
         RuleFor(x => x.CalculationTypeCodSeniorTipCal)
-            .MaximumLength(50).WithMessage("CalculationTypeCodSeniorTipCal não deve exceder {MaxLength} caracteres."));  
+            .MaximumLength(50).WithMessage("CalculationTypeCodSeniorTipCal não deve exceder {MaxLength} caracteres."));
     }
 }

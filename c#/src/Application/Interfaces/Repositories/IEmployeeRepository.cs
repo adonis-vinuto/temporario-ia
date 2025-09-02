@@ -10,9 +10,11 @@ public interface IEmployeeRepository
 
     Task AddAsync(Employee employee, CancellationToken cancellationToken);
 
-    Task<Employee?> SearchByIdAsync(Guid idKnowledge, Guid idEmployee, CancellationToken cancellationToken);
+    Task AddAsync(IList<Employee> employees, CancellationToken cancellationToken);
 
-    Task<Employee?> SearchByIdEmployeeAsync(Guid idEmployee, CancellationToken cancellationToken);
+    Task<Employee?> SearchByIdAsync(Guid idKnowledge, string idEmployee, CancellationToken cancellationToken);
+
+    Task<Employee?> SearchByIdEmployeeAsync(string idEmployee, CancellationToken cancellationToken);
 
     public void Edit(Employee employee);
 

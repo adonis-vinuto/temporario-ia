@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace Application.Handlers.People.Employee.SearchById;
 
-public sealed record SearchEmployeeByIdRequest(Guid IdKnowledge, Guid IdEmployee);
+public sealed record SearchEmployeeByIdRequest(Guid IdKnowledge, string IdEmployee);
 
 public class SearchEmployeeByIdRequestValidator : AbstractValidator<SearchEmployeeByIdRequest>
 {

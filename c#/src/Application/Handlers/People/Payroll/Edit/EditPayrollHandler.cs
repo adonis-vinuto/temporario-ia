@@ -45,7 +45,7 @@ public class EditPayrollHandler : BaseHandler
         if (request.IdEmployee != null)
         {
             Domain.Entities.Employee? employee = await _employeeRepository.SearchByIdAsync(
-                idKnowledge, request.IdEmployee.Value, cancellationToken);
+                idKnowledge, request.IdEmployee, cancellationToken);
 
 
             if (employee is null)
@@ -67,7 +67,7 @@ public class EditPayrollHandler : BaseHandler
         await _payrollRepository.UnitOfWork.Commit();
 
         PayrollResponse response = payroll.Adapt<PayrollResponse>();
-        
+
         return response;
     }
 }

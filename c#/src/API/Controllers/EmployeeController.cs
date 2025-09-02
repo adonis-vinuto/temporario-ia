@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers;
 
 [Route("api/people/employee")]
-[Authorize (Roles = "People")]
+[Authorize(Roles = "People")]
 public class EmployeeController : MainController
 {
     private readonly CreateEmployeeHandler _createEmployeeHandler;
@@ -45,7 +45,7 @@ public class EmployeeController : MainController
         CancellationToken cancellationToken)
     {
         request.IdKnowledge = idKnowledge;
-        
+
         ErrorOr<EmployeeResponse> result = await _createEmployeeHandler.Handle(request, cancellationToken);
 
         return result.Match(
@@ -57,7 +57,7 @@ public class EmployeeController : MainController
     [HttpGet("{idKnowledge:guid}/{idEmployee:guid}")]
     [ProducesResponseType(typeof(EmployeeResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> SearchById([FromRoute] Guid idKnowledge, [FromRoute] Guid idEmployee, CancellationToken cancellationToken)
+    public async Task<IActionResult> SearchById([FromRoute] Guid idKnowledge, [FromRoute] string idEmployee, CancellationToken cancellationToken)
     {
         ErrorOr<EmployeeResponse> result = await _searchEmployeeByIdHandler.Handle(
             new SearchEmployeeByIdRequest(idKnowledge, idEmployee),
@@ -84,7 +84,7 @@ public class EmployeeController : MainController
         return result.IsError
             ? Problem(result.FirstError.Description)
             : Ok(result.Value);
-        
+
     }
 
     [HttpPut("{idKnowledge:guid}/{idEmployee:guid}")]
@@ -93,7 +93,7 @@ public class EmployeeController : MainController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Editar(
         [FromRoute] Guid idKnowledge,
-        [FromRoute] Guid idEmployee,
+        [FromRoute] string idEmployee,
         [FromBody] EditEmployeeRequest request,
         CancellationToken cancellationToken)
     {
@@ -105,12 +105,12 @@ public class EmployeeController : MainController
             ? Problem(title: result.FirstError.Code, detail: result.FirstError.Description, statusCode: MapToHttpStatus(result.FirstError.Type))
             : Ok(result.Value);
     }
-    
+
     [HttpDelete("{idKnowledge:guid}/{idEmployee:guid}")]
     [ProducesResponseType(typeof(EmployeeResponse), StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Remover(
         [FromRoute] Guid idKnowledge,
-        [FromRoute] Guid idEmployee,
+        [FromRoute] string idEmployee,
         CancellationToken cancellationToken)
     {
         ErrorOr<EmployeeResponse> result = await _removeEmployeeHandler.Handle(new RemoveEmployeeRequest(idKnowledge, idEmployee), cancellationToken);
@@ -123,7 +123,7 @@ public class EmployeeController : MainController
                 statusCode: MapToHttpStatus(result.FirstError.Type)
             );
         }
-        
+
         return NoContent();
     }
 }

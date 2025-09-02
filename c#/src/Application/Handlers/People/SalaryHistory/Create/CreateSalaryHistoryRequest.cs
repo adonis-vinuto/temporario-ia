@@ -3,7 +3,7 @@
 namespace Application.Handlers.People.SalaryHistory.Create;
 
 public record CreateSalaryHistoryRequest(
-    Guid IdEmployee,
+    string IdEmployee,
     decimal NewSalary,
     string? EmployeeCodSeniorNumCad,
     string? CollaboratorTypeCodeSeniorTipcol,
@@ -17,8 +17,7 @@ public class CreateSalaryHistoryRequestValidator : AbstractValidator<CreateSalar
     public CreateSalaryHistoryRequestValidator()
     {
         RuleFor(x => x.IdEmployee)
-        .NotEmpty().WithMessage("O Id do trabalhador é obrigatório.")
-        .NotEqual(Guid.Empty).WithMessage("O Id do trabalhador não pode ser vazio.");
+        .NotEmpty().WithMessage("O Id do trabalhador é obrigatório.");
 
         RuleFor(x => x.CollaboratorTypeCodeSeniorTipcol)
             .NotEmpty().WithMessage("O tipo do código do coloborador é necessário.")
@@ -27,7 +26,7 @@ public class CreateSalaryHistoryRequestValidator : AbstractValidator<CreateSalar
         RuleFor(x => x.CompanyCodSeniorNumEmp)
             .NotEmpty().WithMessage("O código da compania é necessário.")
             .Length(1, 400).WithMessage("o código da compania deve conter entre {MinLength} e {MaxLength} caracteres.");
-        
+
         RuleFor(x => x.EmployeeCodSeniorNumCad)
             .NotEmpty().WithMessage("O código do trabalhador é necessário.")
             .Length(1, 400).WithMessage("o código do trabalhador deve conter entre {MinLength} e {MaxLength} caracteres.");

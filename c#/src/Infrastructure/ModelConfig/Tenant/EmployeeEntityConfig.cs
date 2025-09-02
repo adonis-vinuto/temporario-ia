@@ -12,6 +12,10 @@ public sealed class EmployeeConfiguration : IEntityTypeConfiguration<Employee>
 
         builder.HasKey(a => a.Id);
 
+        builder.Property(x => x.Id)
+            .IsRequired()
+            .ValueGeneratedOnAdd();
+
         builder.Property(a => a.IdKnowledge)
             .IsRequired();
 

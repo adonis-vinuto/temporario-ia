@@ -9,7 +9,7 @@ using System.Text.Json.Serialization;
 namespace Application.Handlers.People.Payroll.Edit;
 
 public record EditPayrollRequest(
-    Guid? IdEmployee,
+    string? IdEmployee,
     string? PayrollPeriodCod,
     string? EventName,
     decimal? EventAmount,
@@ -24,8 +24,8 @@ public record EditPayrollRequest(
     string? CalculationTypeCodSeniorTipCal
 )
 {
-    [JsonIgnore] public Guid Id { get; set; }    
-    
+    [JsonIgnore] public Guid Id { get; set; }
+
 }
 public class EditPayrollRequestValidator : AbstractValidator<EditPayrollRequest>
 {
@@ -33,7 +33,7 @@ public class EditPayrollRequestValidator : AbstractValidator<EditPayrollRequest>
     {
         RuleFor(x => x.Id)
             .NotEmpty().WithMessage("Informe o Payroll a ser editado");
-        
+
         When(x => x.IdEmployee is not null, () =>
         RuleFor(x => x.IdEmployee)
             .NotEmpty().WithMessage("Informe o Employee relacionado ao Payroll"));
@@ -58,7 +58,7 @@ public class EditPayrollRequestValidator : AbstractValidator<EditPayrollRequest>
         When(x => x.ReferenceDate.HasValue, () =>
         RuleFor(x => x.ReferenceDate)
             .LessThanOrEqualTo(DateTime.Now).WithMessage("ReferenceDate não pode ser uma data futura."));
-        
+
         When(x => x.CalculationTypeName is not null, () =>
         RuleFor(x => x.CalculationTypeName)
             .MaximumLength(100).WithMessage("CalculationTypeName não deve exceder {MaxLength} caracteres."));
@@ -78,13 +78,13 @@ public class EditPayrollRequestValidator : AbstractValidator<EditPayrollRequest>
         When(x => x.PayrollPeriodCodSeniorCodCal is not null, () =>
         RuleFor(x => x.PayrollPeriodCodSeniorCodCal)
             .MaximumLength(50).WithMessage("PayrollPeriodCodSeniorCodCal não deve exceder {MaxLength} caracteres."));
-        
+
         When(x => x.EventTypeCodSeniorTipEve is not null, () =>
         RuleFor(x => x.EventTypeCodSeniorTipEve)
             .MaximumLength(50).WithMessage("EventTypeCodSeniorTipEve não deve exceder {MaxLength} caracteres."));
 
         When(x => x.CalculationTypeCodSeniorTipCal is not null, () =>
         RuleFor(x => x.CalculationTypeCodSeniorTipCal)
-            .MaximumLength(50).WithMessage("CalculationTypeCodSeniorTipCal não deve exceder {MaxLength} caracteres."));    
+            .MaximumLength(50).WithMessage("CalculationTypeCodSeniorTipCal não deve exceder {MaxLength} caracteres."));
     }
 }
