@@ -17,7 +17,7 @@ public class ChatHistoryRepository : IChatHistoryRepository
         _context = context;
     }
 
-    public async Task<ChatHistory?> SearchChatHistoryByIdSession(
+    public async Task<Domain.Entities.ChatHistory?> SearchChatHistoryByIdSession(
         Guid idSession,
         Module module,
         CancellationToken cancellationToken)
@@ -27,7 +27,23 @@ public class ChatHistoryRepository : IChatHistoryRepository
             .ThenInclude(x => x.Agent)
             .FirstOrDefaultAsync(
                 x => x.Id == idSession &&
-                     x.ChatSession.Agent.Module == module, cancellationToken
+                     x.ChatSession.Agent.Module == module,
+                cancellationToken
             );
+    }
+
+    public async Task<List<Domain.Entities.ChatHistory>> GetHistoryBySessionAsync(
+        Guid idSession,
+        CancellationToken cancellationToken)
+    {
+        return await _context.ChatsHistory
+            .Where(x => x.IdChatSession == idSession)
+            .OrderBy(x => x.CreatedAt)
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task AddAsync(Domain.Entities.ChatHistory chatHistory, CancellationToken cancellationToken)
+    {
+        await _context.ChatsHistory.AddAsync(chatHistory, cancellationToken);
     }
 }

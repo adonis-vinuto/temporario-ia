@@ -7,6 +7,7 @@ namespace Application.Interfaces.Repositories;
 public interface IChatHistoryRepository
 {
     IUnitOfWork UnitOfWork { get; }
-
-    Task<ChatHistory?> SearchChatHistoryByIdSession(Guid idSession, Module module, CancellationToken cancellationToken);
+    Task<Domain.Entities.ChatHistory?> SearchChatHistoryByIdSession(Guid idSession, Module module, CancellationToken cancellationToken);
+    Task<List<Domain.Entities.ChatHistory>> GetHistoryBySessionAsync(Guid idSession, CancellationToken cancellationToken);
+    Task AddAsync(Domain.Entities.ChatHistory chatHistory, CancellationToken cancellationToken);
 }

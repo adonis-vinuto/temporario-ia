@@ -1,4 +1,3 @@
-
 using Application.Common.Responses;
 using Application.Interfaces.Data;
 using Application.Interfaces.Repositories;
@@ -19,29 +18,34 @@ public class AgentRepository : IAgentRepository
         _context = context;
     }
 
-    public async Task AddAsync(Agent agent, CancellationToken cancellationToken)
+    public async Task<Agent?> SearchByIdAsync(
+        Guid idAgent,
+        string organization,
+        Module module,
+        CancellationToken cancellationToken)
     {
-        await _context.Agents.AddAsync(agent, cancellationToken);
+        return await _context.Agents
+            .Include(x => x.Knowledges)
+            .Include(x => x.Files)
+            .Include(x => x.SeniorErpConfigs)
+            .Include(x => x.SeniorHcmConfigs)
+            .FirstOrDefaultAsync(
+                x => x.Id == idAgent &&
+                     x.Organization == organization &&
+                     x.Module == module,
+                cancellationToken
+            );
     }
 
-    public async Task<Agent?> SearchByIdAsync(Guid idAgent, string organization, Module module, CancellationToken cancellationToken)
+    public async Task<List<Agent>> SearchAllAsync(
+        Module module,
+        CancellationToken cancellationToken)
     {
-        return await _context.Agents.FirstOrDefaultAsync(
-            x => x.Id == idAgent && x.Organization == organization && 
-                 x.Module == module, cancellationToken);
-    }
-
-    public void Edit(Agent agent)
-    {
-        _context.Agents.Update(agent);
-    }
-
-    public void Remove(Agent agent)
-    {
-        _context.ChatsHistory.RemoveRange(agent.Chats.SelectMany(h => h.ChatHistory));
-        _context.Chats.RemoveRange(agent.Chats);
-        
-        _context.Agents.Remove(agent);
+        return await _context.Agents
+            .Where(x => x.Module == module)
+            .Include(x => x.Knowledges)
+            .Include(x => x.Files)
+            .ToListAsync(cancellationToken);
     }
 
     public async Task<PagedResponse<Agent>> PagedSearchAsync(
@@ -68,5 +72,20 @@ public class AgentRepository : IAgentRepository
             pagina,
             tamanhoPagina
         );
+    }
+
+    public async Task AddAsync(Agent agent, CancellationToken cancellationToken)
+    {
+        await _context.Agents.AddAsync(agent, cancellationToken);
+    }
+
+    public void Edit(Agent agent)
+    {
+        _context.Agents.Update(agent);
+    }
+
+    public void Remove(Agent agent)
+    {
+        _context.Agents.Remove(agent);
     }
 }

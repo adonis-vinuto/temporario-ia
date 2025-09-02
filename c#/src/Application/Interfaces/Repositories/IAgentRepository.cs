@@ -1,4 +1,3 @@
-
 using Application.Common.Responses;
 using Application.Interfaces.Data;
 using Domain.Entities;
@@ -9,13 +8,8 @@ namespace Application.Interfaces.Repositories;
 public interface IAgentRepository
 {
     IUnitOfWork UnitOfWork { get; }
-
-    Task AddAsync(Agent agent, CancellationToken cancellationToken);
-
     Task<Agent?> SearchByIdAsync(Guid idAgent, string organization, Module module, CancellationToken cancellationToken);
-
-    public void Edit(Agent agent);
-    
+    Task<List<Agent>> SearchAllAsync(Module module, CancellationToken cancellationToken);
     Task<PagedResponse<Agent>> PagedSearchAsync(
         string organization,
         Module module,
@@ -23,6 +17,7 @@ public interface IAgentRepository
         int tamanhoPagina,
         CancellationToken cancellationToken
     );
-
-    public void Remove(Agent agent);
+    Task AddAsync(Agent agent, CancellationToken cancellationToken);
+    void Edit(Agent agent);
+    void Remove(Agent agent);
 }

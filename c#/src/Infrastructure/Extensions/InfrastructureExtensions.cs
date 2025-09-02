@@ -56,6 +56,7 @@ public static class InfrastructureExtensions
         services.AddScoped<ITenantProvider, TenantProvider>();
         services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<IFileUploadService, FileUploadService>();
+        services.AddScoped<IChatSessionRepository, ChatSessionRepository>();
 
         return services;
     }

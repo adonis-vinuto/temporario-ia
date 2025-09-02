@@ -60,6 +60,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Application.Handlers.Session.SearchByIdAgent;
 using Application.Handlers.Session.SearchTwilioByIdAgent;
 using Application.Handlers.ChatHistory.SearchByIdAgent;
+using Application.Handlers.Chat.FirstMessage;
+using Application.Handlers.Chat.SendMessage;
 
 namespace Application.Extensions;
 
@@ -91,6 +93,8 @@ public static class ApplicationExtensions
 
         // Chat
         services.AddScoped<SendMessageHandler>();
+        services.AddScoped<FirstMessageHandler>();
+        services.AddScoped<SendChatMessageHandler>();
 
         // Knowledge
         services.AddScoped<CreateKnowledgeHandler>();
