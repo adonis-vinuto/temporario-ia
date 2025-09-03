@@ -15,7 +15,7 @@ import { Database, Loader2, CheckCircle, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Module } from "@/lib/enums/module";
 import { SeniorHcmIntegration } from "@/lib/interface/SeniorHcmIntegration";
-import { getHcmIntegrations } from "@/app/(app)/integrations/api/hcm/getHcmIntegrations";
+import { getSeniorHCMConfigs } from "@/app/(app)/integrations/api/seniorHCMApi";
 import { 
   testHcmConnection, 
   importHcmData 
@@ -39,7 +39,7 @@ export function HcmImport({ knowledgeId, module }: HcmImportProps) {
   const loadIntegrations = useCallback(async () => {
     try {
       setIsLoading(true);
-      const data = await getHcmIntegrations(module);
+      const data = await getSeniorHCMConfigs(module);
       setIntegrations(data);
     } catch (error: unknown) {
       console.error("Erro ao carregar integrações:", error);
