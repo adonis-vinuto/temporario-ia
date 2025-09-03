@@ -13,6 +13,39 @@ import {
 
 const API_BASE_URL = process.env.API_URL || "";
 
+// =============== INTERFACES PARA TIPAR AS RESPOSTAS DA API ===============
+
+// Interface para dados de sessão vindos da API (linha 130)
+interface ApiSessionData {
+  sessionId: string;
+  lastSendDate: string;
+  totalInteractions: number;
+  userName?: string;
+}
+
+// Interface para sessões Twilio vindas da API (linhas 164-165)
+interface ApiTwilioSession {
+  phoneNumber?: string;
+  From?: string;
+  sessionId?: string;
+  MessageSid?: string;
+  lastSendDate?: string;
+  totalInteractions?: number;
+  ProfileName?: string;
+  userName?: string;
+}
+
+// Interface para dados de mensagem vindos da API (linha 198)
+interface ApiMessageData {
+  role: 0 | 1;
+  content: string;
+  sendDate: string;
+  usage?: {
+    totalTokens?: number;
+    totalTime?: number;
+  };
+}
+
 /**
  * Envia a primeira mensagem para iniciar uma nova sessão de chat
  */
@@ -127,7 +160,7 @@ export async function getChatSessions(
   }
 
   const data = await response.json();
-  return data.map((session: any) => ({
+  return data.map((session: ApiSessionData) => ({
     sessionId: session.sessionId,
     lastSendDate: session.lastSendDate,
     totalInteractions: session.totalInteractions,
@@ -161,8 +194,8 @@ export async function getTwilioSessions(
   const data = await response.json();
   // Filtrar valores null e mapear para o formato esperado
   return (data || [])
-    .filter((session: any) => session !== null)
-    .map((session: any) => ({
+    .filter((session: ApiTwilioSession) => session !== null)
+    .map((session: ApiTwilioSession) => ({
       phoneNumber: session.phoneNumber || session.From || "",
       sessionId: session.sessionId || session.MessageSid || "",
       lastSendDate: session.lastSendDate || new Date().toISOString(),
@@ -195,7 +228,7 @@ export async function getChatHistory(
   }
 
   const data = await response.json();
-  return data.map((message: any) => ({
+  return data.map((message: ApiMessageData) => ({
     role: message.role,
     content: message.content,
     sendDate: message.sendDate,
@@ -210,9 +243,6 @@ export async function getChatHistory(
  * Cria uma nova sessão de chat (útil para chat pessoal)
  */
 export async function createChatSession(
-  module: ModuleType,
-  agentId: string,
-  userId: string
 ): Promise<string> {
   // Esta função pode ser usada se você tiver um endpoint específico
   // para criar sessões sem enviar a primeira mensagem
@@ -229,34 +259,4 @@ export async function deleteChatSession(
 ): Promise<void> {
   // Implementar quando/se houver endpoint para deletar sessões
   console.log(`Deletando sessão: ${sessionId}`);
-}
-
-/**
- * Helper para formatar data/hora
- */
-export function formatChatDate(dateString: string): string {
-  const date = new Date(dateString);
-  const now = new Date();
-  const diffInHours = (now.getTime() - date.getTime()) / (1000 * 60 * 60);
-
-  if (diffInHours < 24) {
-    return date.toLocaleTimeString('pt-BR', {
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  } else if (diffInHours < 168) { // 7 dias
-    return date.toLocaleDateString('pt-BR', {
-      weekday: 'short',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  } else {
-    return date.toLocaleDateString('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  }
 }

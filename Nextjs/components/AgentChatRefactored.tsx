@@ -24,10 +24,48 @@ import {
   sendMessage,
   getChatSessions,
   getTwilioSessions,
-  getChatHistory,
-  formatChatDate,
-  ModuleType
+  getChatHistory
 } from '@/app/(app)/agents/[id]/api/chatApi';
+
+// Import dos tipos diretamente da interface
+import { 
+  ModuleType, 
+  ChatSessionResponse, 
+  TwilioSession,
+  ChatHistoryResponse 
+} from '@/lib/interface/Chat';
+
+// Props do componente
+interface AgentChatRefactoredProps {
+  module: ModuleType;
+  agentId: string;
+  userId: string;
+  agentName?: string;
+  initialSessionId?: string;
+  onNewSession?: (sessionId: string) => void;
+}
+
+// ===================== INTERFACES LOCAIS =====================
+
+// Interface para mensagens no chat
+interface ChatMessage {
+  role: 'user' | 'assistant';
+  content: string;
+  sendDate: string;
+  usage?: {
+    totalTokens: number;
+    totalTime: number;
+  };
+}
+
+// Interface para sessão selecionada (união dos tipos possíveis)
+type SelectedSession = ChatSessionResponse | TwilioSession | {
+  sessionId: string;
+  userName?: string;
+  phoneNumber?: string;
+  lastSendDate: string;
+  totalInteractions: number;
+} | null;
 
 // Props do componente
 interface AgentChatRefactoredProps {
@@ -51,11 +89,11 @@ const AgentChatRefactored: React.FC<AgentChatRefactoredProps> = ({
   const [leftSidebarOpen, setLeftSidebarOpen] = useState(true);
   const [rightSidebarOpen, setRightSidebarOpen] = useState(true);
   const [activeTab, setActiveTab] = useState<'personal' | 'shared' | 'twilio'>('shared');
-  const [selectedSession, setSelectedSession] = useState<any>(null);
+  const [selectedSession, setSelectedSession] = useState<SelectedSession>(null); // CORRIGIDO: tipo específico
   const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState<any[]>([]);
-  const [sessions, setSessions] = useState<any[]>([]);
-  const [twilioSessions, setTwilioSessions] = useState<any[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]); // CORRIGIDO: array tipado
+  const [sessions, setSessions] = useState<ChatSessionResponse[]>([]); // CORRIGIDO: array tipado
+  const [twilioSessions, setTwilioSessions] = useState<TwilioSession[]>([]); // CORRIGIDO: array tipado
   const [loading, setLoading] = useState(false);
   const [loadingSessions, setLoadingSessions] = useState(false);
   const [sendingMessage, setSendingMessage] = useState(false);
@@ -73,7 +111,9 @@ const AgentChatRefactored: React.FC<AgentChatRefactoredProps> = ({
     if (initialSessionId) {
       setSelectedSession({ 
         sessionId: initialSessionId, 
-        userName: 'Sessão Atual' 
+        userName: 'Sessão Atual',
+        lastSendDate: new Date().toISOString(),
+        totalInteractions: 0
       });
     }
   }, [initialSessionId]);
@@ -88,7 +128,7 @@ const AgentChatRefactored: React.FC<AgentChatRefactoredProps> = ({
         
         // Se tiver uma sessão inicial e ela está na lista, seleciona
         if (initialSessionId) {
-          const sessionExists = data.find((s: any) => s.sessionId === initialSessionId);
+          const sessionExists = data.find((s: ChatSessionResponse) => s.sessionId === initialSessionId);
           if (sessionExists) {
             setSelectedSession(sessionExists);
           }
@@ -121,12 +161,12 @@ const AgentChatRefactored: React.FC<AgentChatRefactoredProps> = ({
       const history = await getChatHistory(module, selectedSession.sessionId);
       
       // Converter o formato da API para o formato do componente
-      const formattedMessages = history.map((msg: any) => ({
-        role: msg.role === 0 ? 'assistant' : 'user',
+      const formattedMessages = history.map((msg: ChatHistoryResponse): ChatMessage => ({
+        role: msg.role === 0 ? 'assistant' as const : 'user' as const, // Adicione 'as const'
         content: msg.content,
         sendDate: msg.sendDate,
         usage: msg.usage
-      }));
+        }));
       
       setMessages(formattedMessages);
     } catch (error) {
@@ -149,10 +189,10 @@ const AgentChatRefactored: React.FC<AgentChatRefactoredProps> = ({
   const handleSendMessage = async () => {
     if (!message.trim()) return;
 
-    const userMessage = {
-      role: 'user',
-      content: message,
-      sendDate: new Date().toISOString()
+    const userMessage: ChatMessage = {
+        role: 'user',
+        content: message,
+        sendDate: new Date().toISOString()
     };
 
     setMessages(prev => [...prev, userMessage]);
@@ -192,7 +232,7 @@ const AgentChatRefactored: React.FC<AgentChatRefactoredProps> = ({
         response = await sendMessage(module, agentId, newSessionId, userMessage.content);
       }
 
-      const aiMessage = {
+      const aiMessage: ChatMessage = {
         role: 'assistant',
         content: response.messageResponse,
         sendDate: new Date().toISOString()
@@ -215,10 +255,6 @@ const AgentChatRefactored: React.FC<AgentChatRefactoredProps> = ({
       e.preventDefault();
       handleSendMessage();
     }
-  };
-
-  const formatDate = (dateString: string) => {
-    return formatChatDate(dateString);
   };
 
   const toggleAccordion = (key: string) => {
@@ -259,7 +295,7 @@ const AgentChatRefactored: React.FC<AgentChatRefactoredProps> = ({
 
     return (
       <div className="space-y-2">
-        {sessionsToRender.map((session: any) => (
+        {sessionsToRender.map((session: ChatSessionResponse | TwilioSession) => (
           <div
             key={session.sessionId}
             onClick={() => setSelectedSession(session)}
@@ -270,12 +306,8 @@ const AgentChatRefactored: React.FC<AgentChatRefactoredProps> = ({
             }`}
           >
             <div className="flex items-center justify-between mb-1">
-              <span className="font-medium text-gray-800">
-                {session.userName || session.phoneNumber || `Sessão ${session.sessionId.slice(-6)}`}
-              </span>
               <span className="text-xs text-gray-500">{session.totalInteractions} msgs</span>
             </div>
-            <p className="text-xs text-gray-500">{formatDate(session.lastSendDate)}</p>
           </div>
         ))}
       </div>
@@ -358,11 +390,11 @@ const AgentChatRefactored: React.FC<AgentChatRefactoredProps> = ({
           {selectedSession ? (
             <div className="flex items-center">
               <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold mr-3">
-                {(selectedSession.userName || selectedSession.phoneNumber || 'U').charAt(0).toUpperCase()}
+                {(selectedSession.userName || 'U').charAt(0).toUpperCase()}
               </div>
               <div>
                 <h3 className="font-semibold text-gray-800">
-                  {selectedSession.userName || selectedSession.phoneNumber || `Sessão ${selectedSession.sessionId.slice(-6)}`}
+                  {selectedSession.userName || `Sessão ${selectedSession.sessionId.slice(-6)}`}
                 </h3>
                 <p className="text-sm text-gray-500">
                   {agentName} • {activeTab === 'twilio' ? 'WhatsApp' : 'Chat'}
@@ -412,9 +444,7 @@ const AgentChatRefactored: React.FC<AgentChatRefactoredProps> = ({
                         <div className="flex-1">
                           <p className="text-gray-800 leading-relaxed whitespace-pre-wrap">{msg.content}</p>
                           <div className="flex items-center gap-3 mt-1">
-                            <span className="text-xs text-gray-400">
-                              {formatDate(msg.sendDate)}
-                            </span>
+
                             {msg.usage && (
                               <span className="text-xs text-gray-400">
                                 {msg.usage.totalTokens} tokens • {msg.usage.totalTime.toFixed(2)}s
@@ -429,9 +459,7 @@ const AgentChatRefactored: React.FC<AgentChatRefactoredProps> = ({
                         <div className="bg-blue-500 text-white rounded-2xl rounded-br-none px-4 py-3">
                           <p className="leading-relaxed whitespace-pre-wrap">{msg.content}</p>
                         </div>
-                        <span className="text-xs text-gray-400 mt-1 inline-block">
-                          {formatDate(msg.sendDate)}
-                        </span>
+
                       </div>
                     )}
                   </div>
@@ -528,7 +556,7 @@ const AgentChatRefactored: React.FC<AgentChatRefactoredProps> = ({
                   </div>
                   <div>
                     <label className="text-sm font-medium text-gray-700">ID do Agente</label>
-                    <p className="text-sm text-gray-600 font-mono text-xs">{agentId}</p>
+                    <p className="text-sm text-gray-600 font-mono">{agentId}</p>
                   </div>
                   <p className="text-xs text-gray-400 mt-3">
                     Mais configurações em desenvolvimento...

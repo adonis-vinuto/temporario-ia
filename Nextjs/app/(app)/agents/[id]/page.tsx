@@ -2,7 +2,7 @@
 
 "use client";
 
-import { use, useState, useEffect } from "react";
+import { use, useState } from "react";
 import { buscarAgentePorId } from "./agente/actions/getAgenteId";
 import { useQuery } from "@tanstack/react-query";
 import { useModule } from "@/lib/context/ModuleContext";
