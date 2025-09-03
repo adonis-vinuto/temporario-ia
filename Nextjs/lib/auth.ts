@@ -1,93 +1,79 @@
+// lib/auth.ts
 import { NextAuthOptions } from "next-auth";
 import KeycloakProvider from "next-auth/providers/keycloak";
-import { JWT } from "next-auth/jwt";
 
-// Interfaces para tipagem
-interface RefreshTokenResponse {
-  access_token: string;
-  refresh_token?: string;
-  expires_in: number;
-}
+async function refreshAccessToken(token: any) {
+    try {
+        const url = `${process.env.KEYCLOAK_BASE_URL}/realms/${process.env.KEYCLOAK_REALM}/protocol/openid-connect/token`;
 
-interface ExtendedToken extends JWT {
-  accessToken?: string;
-  refreshToken?: string;
-  expires?: number;
-  error?: string;
-}
+        const response = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: new URLSearchParams({
+                client_id: process.env.KEYCLOAK_CLIENT_ID!,
+                client_secret: process.env.KEYCLOAK_CLIENT_SECRET || "",
+                grant_type: "refresh_token",
+                refresh_token: token.refreshToken,
+            }),
+        });
 
-async function refreshAccessToken(token: ExtendedToken): Promise<ExtendedToken> {
-  try {
-    const url = `${process.env.KEYCLOAK_BASE_URL}/realms/${process.env.KEYCLOAK_REALM}/protocol/openid-connect/token`;
-    const response = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({
-        client_id: process.env.KEYCLOAK_CLIENT_ID!,
-        client_secret: process.env.KEYCLOAK_CLIENT_SECRET || "",
-        grant_type: "refresh_token",
-        refresh_token: token.refreshToken!,
-      }),
-    });
-    
-    const data: RefreshTokenResponse = await response.json();
+        const data = await response.json();
+        if (!response.ok) throw data;
 
-    if (!response.ok) throw data;
-
-    return {
-      ...token,
-      accessToken: data.access_token,
-      refreshToken: data.refresh_token ?? token.refreshToken,
-      expires: Date.now() + data.expires_in * 1000,
-    };
-  } catch (error) {
-    console.error("Erro ao renovar access token", error);
-    return { ...token, error: "RefreshAccessTokenError" };
-  }
+        return {
+            ...token,
+            accessToken: data.access_token,
+            refreshToken: data.refresh_token ?? token.refreshToken,
+            expires: Date.now() + data.expires_in * 1000,
+        };
+    } catch (error) {
+        console.error("Erro ao renovar access token", error);
+        return { ...token, error: "RefreshAccessTokenError" };
+    }
 }
 
 export const authOptions: NextAuthOptions = {
-  providers: [
-    KeycloakProvider({
-      clientId: process.env.KEYCLOAK_CLIENT_ID!,
-      clientSecret: process.env.KEYCLOAK_CLIENT_SECRET || "",
-      issuer: `${process.env.KEYCLOAK_BASE_URL}/realms/${process.env.KEYCLOAK_REALM}`,
-    }),
-  ],
-  pages: {
-    signIn: "/login",
-    error: "/login",
-  },
-  session: {
-    strategy: "jwt",
-    maxAge: 60 * 60 * 24,
-  },
-  callbacks: {
-    async jwt({ token, account }) {
-      const extendedToken = token as ExtendedToken;
-      
-      if (account) {
-        extendedToken.accessToken = account.access_token;
-        extendedToken.refreshToken = account.refresh_token;
-        extendedToken.expires = account.expires_at! * 1000;
-      }
-      
-      if (extendedToken.expires && Date.now() < extendedToken.expires) {
-        return extendedToken;
-      }
-      
-      return extendedToken.refreshToken ? refreshAccessToken(extendedToken) : extendedToken;
+    providers: [
+        KeycloakProvider({
+            clientId: process.env.KEYCLOAK_CLIENT_ID!,
+            clientSecret: process.env.KEYCLOAK_CLIENT_SECRET || "",
+            issuer: `${process.env.KEYCLOAK_BASE_URL}/realms/${process.env.KEYCLOAK_REALM}`,
+            httpOptions: { timeout: 10000 }, // timeout opcional
+        }),
+    ],
+    pages: {
+        signIn: "/login",
+        error: "/login",
     },
-    async session({ session, token }) {
-      const extendedToken = token as ExtendedToken;
-      const extendedSession = session as typeof session & {
-        accessToken?: string;
-        error?: string;
-      };
-      
-      extendedSession.accessToken = extendedToken.accessToken;
-      extendedSession.error = extendedToken.error;
-      return extendedSession;
+    session: {
+        strategy: "jwt",
     },
-  },
+    callbacks: {
+        async jwt({ token, user, account }) {
+            // Quando o usuário loga pela primeira vez
+            if (account && user) {
+                return {
+                    accessToken: account.access_token,
+                    refreshToken: account.refresh_token,
+                    expires: Date.now() + ((account.expires_in as number) * 1000),
+                    user,
+                };
+            }
+
+            // Se o token ainda é válido, retorna
+            if (Date.now() < (token.expires as number)) {
+                return token;
+            }
+
+            // Caso contrário, tenta renovar
+            return await refreshAccessToken(token);
+        },
+
+        async session({ session, token }) {
+            session.user = token.user as typeof session.user;
+            session.accessToken = token.accessToken as string;
+            session.error = token.error as string | undefined;
+            return session;
+        },
+    },
 };

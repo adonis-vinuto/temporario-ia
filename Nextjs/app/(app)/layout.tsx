@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import NavItem from "@/components/navItem";
 import {
@@ -16,12 +16,15 @@ import {
   //MoreVertical,
   ChevronLeft,
   ChevronRight,
+  MoreVertical,
 } from "lucide-react";
 import Image from "next/image";
 import komvos from "@/public/img/Imagem1.png";
 import { ModuleSelector } from "@/components/ModuleSelector";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useSession } from "next-auth/react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 //import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 export default function NavbarEsquerda({
@@ -30,14 +33,15 @@ export default function NavbarEsquerda({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true); // Barra colapsada por padrão
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false); // Barra colapsada por padrão
+  const { data: session, status } = useSession();
+  const router = useRouter();
 
   return (
     <div className="flex h-dvh overflow-hidden">
       <aside
-        className={`${
-          isSidebarCollapsed ? "w-16" : "w-64"
-        } bg-sidebar text-sidebar-foreground p-4 flex flex-col justify-between rounded-tr-xl rounded-br-xl overflow-y-auto transition-all duration-300`}
+        className={`${isSidebarCollapsed ? "w-16" : "w-64"
+          } bg-sidebar text-sidebar-foreground p-4 flex flex-col justify-between rounded-tr-xl rounded-br-xl overflow-y-auto transition-all duration-300`}
       >
         {/* Topo - Logo e módulo */}
         <div>
@@ -50,9 +54,8 @@ export default function NavbarEsquerda({
               alt="Logo Komvos"
               width={40}
               height={40}
-              className={`rounded-full transition-transform duration-300 ${
-                isSidebarCollapsed ? "scale-150" : "scale-100"
-              }`}
+              className={`rounded-full transition-transform duration-300 ${isSidebarCollapsed ? "scale-150" : "scale-100"
+                }`}
             />
             {!isSidebarCollapsed && (
               <div>
@@ -177,9 +180,29 @@ export default function NavbarEsquerda({
                     className="rounded-full"
                   />
                   <div>
-                    <div className="font-semibold">John Doe</div>
-                    <div className="text-xs text-white/70">user@email.com</div>
+                    <div className="font-semibold">{session?.user?.name ?? "Usuário"}</div>
+                    <div className="text-xs text-white/70">{session?.user?.email ?? "Email do usuário"}</div>
                   </div>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" className="h-8 w-8 p-0">
+                        <span className="sr-only">Open menu</span>
+                        <MoreVertical />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuLabel>Configurações de conta</DropdownMenuLabel>
+                      <DropdownMenuItem asChild>
+                        <Link
+                          href={process.env.NEXT_PUBLIC_KEYCLOAK_ACCOUNT_URL ?? "https://kc.statum.com.br/realms/KomvosMind/account/"}
+                          target="_blank" // opcional
+                          rel="noopener noreferrer"
+                        >
+                          Editar Perfil
+                        </Link>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
                 {/* <MoreVertical size={18} /> */}
               </>
