@@ -315,7 +315,7 @@ const AgentChatRefactored: React.FC<AgentChatRefactoredProps> = ({
   };
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] bg-gray-50">
+    <div className="flex h-[calc(100vh-4rem)] bg-background">
       {/* Menu Lateral Esquerdo - Sessões */}
       <div className={`${leftSidebarOpen ? 'w-80' : 'w-0'} transition-all duration-300 bg-white border-r border-gray-200 flex flex-col overflow-hidden`}>
         <div className="p-4 border-b border-gray-200">
@@ -351,7 +351,7 @@ const AgentChatRefactored: React.FC<AgentChatRefactoredProps> = ({
               }`}
             >
               <Users className="w-4 h-4 mr-1" />
-              Compartilhado
+              Equipe
             </button>
             <button
               onClick={() => setActiveTab('twilio')}

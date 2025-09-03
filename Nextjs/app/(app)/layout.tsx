@@ -225,7 +225,7 @@ export default function NavbarEsquerda({
       </Button>
 
       {/* Conteúdo da página */}
-      <main className="flex-1 bg-background p-6 overflow-y-auto">
+      <main className="flex-1 bg-background overflow-y-auto">
         {children}
       </main>
     </div>

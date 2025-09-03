@@ -1,16 +1,16 @@
 // app/(app)/agents/[id]/api/chatApi.ts
 
 "use server";
-
+import { Module, ModuleNames } from "@/lib/enums/module";
 import {
   ChatResponse,
   ChatFirstMessageResponse,
   ChatHistoryResponse,
   ChatSessionResponse,
-  TwilioSession,
-  ModuleType
+  TwilioSession
 } from "@/lib/interface/Chat";
-
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
 const API_BASE_URL = process.env.API_URL || "";
 
 // =============== INTERFACES PARA TIPAR AS RESPOSTAS DA API ===============
@@ -50,16 +50,22 @@ interface ApiMessageData {
  * Envia a primeira mensagem para iniciar uma nova sessão de chat
  */
 export async function sendFirstMessage(
-  module: ModuleType,
+  module: Module,
   agentId: string,
   message: string
 ): Promise<ChatFirstMessageResponse> {
-  const response = await fetch(
-    `${API_BASE_URL}/api/${module}/chat/${agentId}/first-message`,
+    const session = await getServerSession(authOptions);
+ 
+    if (!session?.accessToken) {
+      throw new Error("Token de autenticação não encontrado. Por favor, faça login novamente.");
+    }
+    const response = await fetch(
+    `${API_BASE_URL}/api/${ModuleNames[module]}/chat/${agentId}/first-message`,
     {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${session.accessToken}`,
       },
       body: JSON.stringify({ message }),
       cache: "no-store",
@@ -82,17 +88,24 @@ export async function sendFirstMessage(
  * Envia uma mensagem em uma sessão existente
  */
 export async function sendMessage(
-  module: ModuleType,
+  module: Module,
   agentId: string,
   sessionId: string,
   message: string
 ): Promise<ChatResponse> {
+  const session = await getServerSession(authOptions);
+ 
+  if (!session?.accessToken) {
+    throw new Error("Token de autenticação não encontrado. Por favor, faça login novamente.");
+  }
+
   const response = await fetch(
-    `${API_BASE_URL}/api/${module}/chat/${agentId}/${sessionId}`,
+    `${API_BASE_URL}/api/${ModuleNames[module]}/chat/${agentId}/${sessionId}`,
     {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${session.accessToken}`,
       },
       body: JSON.stringify({ message }),
       cache: "no-store",
@@ -111,16 +124,22 @@ export async function sendMessage(
  * Envia mensagem via integração Twilio
  */
 export async function sendTwilioMessage(
-  module: ModuleType,
+  module: Module,
   agentId: string,
   twilioData: string
 ): Promise<ChatResponse> {
+    const session = await getServerSession(authOptions);
+ 
+  if (!session?.accessToken) {
+    throw new Error("Token de autenticação não encontrado. Por favor, faça login novamente.");
+  }
   const response = await fetch(
-    `${API_BASE_URL}/api/${module}/chat-twilio/${agentId}`,
+    `${API_BASE_URL}/api/${ModuleNames[module]}/chat-twilio/${agentId}`,
     {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
+        "Authorization": `Bearer ${session.accessToken}`,
       },
       body: twilioData,
       cache: "no-store",
@@ -139,21 +158,29 @@ export async function sendTwilioMessage(
  * Busca todas as sessões de chat de um agente para um usuário
  */
 export async function getChatSessions(
-  module: ModuleType,
+  module: Module,
   agentId: string,
   userId: string
 ): Promise<ChatSessionResponse[]> {
+  
+  const session = await getServerSession(authOptions);
+ 
+  if (!session?.accessToken) {
+    throw new Error("Token de autenticação não encontrado. Por favor, faça login novamente.");
+  }
   const response = await fetch(
     `${API_BASE_URL}/api/${module}/chat-session/${agentId}/${userId}`,
     {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+       "Authorization": `Bearer ${session.accessToken}`,
       },
       cache: "no-store",
     }
   );
-
+  console.log(`Buscando sessões de chat para agente ${agentId} e usuário ${userId}`);
+  console.log(`URL: ${API_BASE_URL}/api/${module}/chat-session/${agentId}/${userId}`);
   if (!response.ok) {
     const error = await response.json().catch(() => ({ detail: "Erro desconhecido" }));
     throw new Error(error.detail || "Erro ao buscar sessões de chat");
@@ -172,15 +199,21 @@ export async function getChatSessions(
  * Busca todas as sessões Twilio de um agente
  */
 export async function getTwilioSessions(
-  module: ModuleType,
+  module: Module,
   agentId: string
 ): Promise<TwilioSession[]> {
+    const session = await getServerSession(authOptions);
+ 
+  if (!session?.accessToken) {
+    throw new Error("Token de autenticação não encontrado. Por favor, faça login novamente.");
+  }
   const response = await fetch(
-    `${API_BASE_URL}/api/${module}/chat-session-twilio/${agentId}`,
+    `${API_BASE_URL}/api/${ModuleNames[module]}/chat-session-twilio/${agentId}`,
     {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${session.accessToken}`,
       },
       cache: "no-store",
     }
@@ -208,15 +241,21 @@ export async function getTwilioSessions(
  * Busca o histórico de mensagens de uma sessão
  */
 export async function getChatHistory(
-  module: ModuleType,
+  module: Module,
   sessionId: string
 ): Promise<ChatHistoryResponse[]> {
+    const session = await getServerSession(authOptions);
+ 
+  if (!session?.accessToken) {
+    throw new Error("Token de autenticação não encontrado. Por favor, faça login novamente.");
+  }
   const response = await fetch(
-    `${API_BASE_URL}/api/${module}/chat-history/${sessionId}`,
+    `${API_BASE_URL}/api/${ModuleNames[module]}/chat-history/${sessionId}`,
     {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${session.accessToken}`,
       },
       cache: "no-store",
     }
@@ -254,7 +293,7 @@ export async function createChatSession(
  * Deleta uma sessão de chat (se suportado pela API)
  */
 export async function deleteChatSession(
-  module: ModuleType,
+  module: Module,
   sessionId: string
 ): Promise<void> {
   // Implementar quando/se houver endpoint para deletar sessões

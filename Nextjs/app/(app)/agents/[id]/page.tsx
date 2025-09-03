@@ -42,7 +42,7 @@ export default function AgentPage({
   };
 
   return (
-    <div className="h-screen flex flex-col bg-background">
+    <div className="h-screen flex flex-col bg-white">
       <AgentChatRefactored
         module={moduleType}
         agentId={id}
