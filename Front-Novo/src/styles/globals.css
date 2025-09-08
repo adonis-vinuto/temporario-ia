@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+@theme {
+
+  --color-background: #f0f9ff;
+  --color-foreground: #0c4a6e;
+  
+  --color-card: #ffffff;
+  --color-card-foreground: #0c4a6e;
+  
+  --color-sidebar-background: #e0f2fe;
+  --color-sidebar-foreground: #075985;
+  
+  --color-muted: #64748b;
+  --color-accent: #00AFEF;
+  --color-border: #cbd5e1;
+  
+  --color-danger: #ef4444;
+  --color-warning: #f59e0b;
+  --color-success: #10b981;
+  
+  --radius: 0.5rem;
+}
