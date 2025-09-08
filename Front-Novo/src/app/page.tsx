@@ -47,11 +47,12 @@ export default function HomePage() {
               e impulsiona decisões com eficiência, segurança e visão estratégica.
             </p>
             
-            <button 
-              className="px-8 py-4 bg-blue-300 rounded-lg hover:shadow-lg hover:-translate-y-0.5 transition-all font-medium text-lg"
+            <Link
+              href="/login"
+              className="inline-block px-8 py-4 bg-blue-300 rounded-lg hover:shadow-lg hover:-translate-y-0.5 transition-all font-medium text-lg"
             >
               Acessar Plataforma
-            </button>
+            </Link>
           </div>
         </div>
       </section>
