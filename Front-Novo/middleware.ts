@@ -16,18 +16,15 @@ export async function middleware(req: NextRequest) {
   }
 
   if (!token) {
-    console.log("Middleware: Nenhum token encontrado.");
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
   if (token.exp) {
-    const sessionExp = Number(token.exp) * 1000; // converte para ms
+    const sessionExp = Number(token.exp) * 1000;
     if (Date.now() > sessionExp - SESSION_TOLERANCE) {
-      console.log("Middleware: Sessão expirada");
       return NextResponse.redirect(new URL("/login", req.url));
     }
   }
-  console.log("Middleware OK, sessão ativa.");
   return NextResponse.next();
 }
 

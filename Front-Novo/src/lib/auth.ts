@@ -1,4 +1,3 @@
-// lib/auth.ts
 import { NextAuthOptions } from "next-auth";
 import KeycloakProvider from "next-auth/providers/keycloak";
 
@@ -38,7 +37,7 @@ export const authOptions: NextAuthOptions = {
       clientId: process.env.KEYCLOAK_CLIENT_ID!,
       clientSecret: process.env.KEYCLOAK_CLIENT_SECRET || "",
       issuer: `${process.env.KEYCLOAK_BASE_URL}/realms/${process.env.KEYCLOAK_REALM}`,
-      httpOptions: { timeout: 10000 }, // timeout opcional
+      httpOptions: { timeout: 10000 },
     }),
   ],
   pages: {
@@ -50,7 +49,6 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, user, account }) {
-      // Quando o usuário loga pela primeira vez
       if (account && user) {
         return {
           accessToken: account.access_token,
@@ -59,13 +57,9 @@ export const authOptions: NextAuthOptions = {
           user,
         };
       }
-
-      // Se o token ainda é válido, retorna
       if (Date.now() < (token.expires as number)) {
         return token;
       }
-
-      // Caso contrário, tenta renovar
       return await refreshAccessToken(token);
     },
 
