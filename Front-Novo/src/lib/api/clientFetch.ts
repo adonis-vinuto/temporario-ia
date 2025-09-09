@@ -1,18 +1,19 @@
 "use client";
 import { getSession } from "next-auth/react";
+import type { IApiResponse, IFormDataInput } from "@/types";
 
-export default async function clientFetch<T = any>(
+export default async function clientFetch<T = IApiResponse>(
   url: string,
   method: string = "GET",
   body?: object
 ): Promise<T | undefined> {
   try {
     const session = await getSession();
-    
+   
     if (!session?.accessToken) {
       throw new Error("Não autenticado");
     }
-    
+   
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${url}`, {
       method,
       headers: {
@@ -21,19 +22,19 @@ export default async function clientFetch<T = any>(
       },
       body: body ? JSON.stringify(body) : undefined,
     });
-
+    
     if (!res.ok) {
       const errorData = await res.text();
       throw new Error(`HTTP ${res.status}: ${errorData || res.statusText}`);
     }
-
+    
     return res.json();
   } catch (error) {
     throw error;
   }
 }
 
-export async function clientFetchMultipart<T = any>(
+export async function clientFetchMultipart<T = IApiResponse>(
   url: string,
   method: string = "POST",
   body?: BodyInit,
@@ -41,23 +42,22 @@ export async function clientFetchMultipart<T = any>(
 ): Promise<T | undefined> {
   try {
     const session = await getSession();
-    
+   
     if (!session?.accessToken) {
       throw new Error("Não autenticado");
     }
-    
+   
     if (onUploadProgress && body instanceof FormData) {
-
       return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
-        
+       
         xhr.upload.addEventListener("progress", (event) => {
           if (event.lengthComputable) {
             const progress = (event.loaded / event.total) * 100;
             onUploadProgress(progress);
           }
         });
-        
+       
         xhr.addEventListener("load", () => {
           if (xhr.status >= 200 && xhr.status < 300) {
             try {
@@ -70,17 +70,17 @@ export async function clientFetchMultipart<T = any>(
             reject(new Error(`HTTP ${xhr.status}: ${xhr.statusText}`));
           }
         });
-        
+       
         xhr.addEventListener("error", () => {
           reject(new Error("Erro na requisição"));
         });
-        
+       
         xhr.open(method, `${process.env.NEXT_PUBLIC_API_URL}${url}`);
         xhr.setRequestHeader("Authorization", `Bearer ${session.accessToken}`);
         xhr.send(body);
       });
     }
-    
+   
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${url}`, {
       method,
       headers: {
@@ -88,21 +88,21 @@ export async function clientFetchMultipart<T = any>(
       },
       body: body,
     });
-
+    
     if (!res.ok) {
       const errorData = await res.text();
       throw new Error(`HTTP ${res.status}: ${errorData || res.statusText}`);
     }
-
+    
     return res.json();
   } catch (error) {
     throw error;
   }
 }
 
-export function createFormData(data: Record<string, any>): FormData {
+export function createFormData(data: IFormDataInput): FormData {
   const formData = new FormData();
-  
+ 
   Object.entries(data).forEach(([key, value]) => {
     if (value instanceof File || value instanceof Blob) {
       formData.append(key, value);
@@ -116,6 +116,6 @@ export function createFormData(data: Record<string, any>): FormData {
       formData.append(key, String(value));
     }
   });
-  
+ 
   return formData;
 }
