@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next"
 import { Inter } from "next/font/google"
 import "@/styles/globals.css"
 import { cn } from "@/lib/utils"
+import { Providers } from "./providers"
 
 const inter = Inter({ 
   subsets: ["latin"],
@@ -56,7 +57,9 @@ export default function RootLayout({
         )}
       >
         <div id="toast-container" />
+        <Providers>
           {children}
+        </Providers>
       </body>
     </html>
   )

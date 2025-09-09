@@ -32,6 +32,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@tanstack/react-query-devtools": "^5.87.3",
     "@types/node": "^22.0.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
@@ -43,7 +44,7 @@
   },
   "overrides": {
     "color-convert": "^2.0.1",
-    "color-name": "^1.1.4", 
+    "color-name": "^1.1.4",
     "debug": "^4.4.0",
     "is-arrayish": "^0.3.2"
   }

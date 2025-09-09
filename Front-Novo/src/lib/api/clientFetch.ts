@@ -1,60 +1,121 @@
 "use client";
-
 import { getSession } from "next-auth/react";
 
-export default async function clientFetch(
+export default async function clientFetch<T = any>(
   url: string,
-  method?: string,
+  method: string = "GET",
   body?: object
-) {
+): Promise<T | undefined> {
   try {
+    const session = await getSession();
+    
+    if (!session?.accessToken) {
+      throw new Error("Não autenticado");
+    }
+    
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${url}`, {
-      method: method ?? "GET",
+      method,
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${(await getSession())?.accessToken}`,
+        Authorization: `Bearer ${session.accessToken}`,
       },
-      body: JSON.stringify(body),
+      body: body ? JSON.stringify(body) : undefined,
     });
 
     if (!res.ok) {
-      throw new Error(`HTTP error! Status: ${res.status}`);
+      const errorData = await res.text();
+      throw new Error(`HTTP ${res.status}: ${errorData || res.statusText}`);
     }
 
     return res.json();
   } catch (error) {
-    console.error(
-      `Erro ao buscar dados: ${
-        error instanceof Error ? error.message : "Erro desconhecido"
-      }`
-    );
+    throw error;
   }
 }
 
-export async function clientFetchMultipart(
+export async function clientFetchMultipart<T = any>(
   url: string,
-  method?: string,
-  body?: BodyInit
-) {
+  method: string = "POST",
+  body?: BodyInit,
+  onUploadProgress?: (progress: number) => void
+): Promise<T | undefined> {
   try {
+    const session = await getSession();
+    
+    if (!session?.accessToken) {
+      throw new Error("Não autenticado");
+    }
+    
+    if (onUploadProgress && body instanceof FormData) {
+
+      return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        
+        xhr.upload.addEventListener("progress", (event) => {
+          if (event.lengthComputable) {
+            const progress = (event.loaded / event.total) * 100;
+            onUploadProgress(progress);
+          }
+        });
+        
+        xhr.addEventListener("load", () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            try {
+              const response = JSON.parse(xhr.responseText);
+              resolve(response);
+            } catch {
+              resolve(xhr.responseText as T);
+            }
+          } else {
+            reject(new Error(`HTTP ${xhr.status}: ${xhr.statusText}`));
+          }
+        });
+        
+        xhr.addEventListener("error", () => {
+          reject(new Error("Erro na requisição"));
+        });
+        
+        xhr.open(method, `${process.env.NEXT_PUBLIC_API_URL}${url}`);
+        xhr.setRequestHeader("Authorization", `Bearer ${session.accessToken}`);
+        xhr.send(body);
+      });
+    }
+    
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${url}`, {
-      method: method ?? "GET",
+      method,
       headers: {
-        Authorization: `Bearer ${(await getSession())?.accessToken}`,
+        Authorization: `Bearer ${session.accessToken}`,
       },
       body: body,
     });
 
     if (!res.ok) {
-      throw new Error(`HTTP error! Status: ${res.status}`);
+      const errorData = await res.text();
+      throw new Error(`HTTP ${res.status}: ${errorData || res.statusText}`);
     }
 
     return res.json();
   } catch (error) {
-    console.error(
-      `Erro ao buscar dados: ${
-        error instanceof Error ? error.message : "Erro desconhecido"
-      }`
-    );
+    throw error;
   }
+}
+
+export function createFormData(data: Record<string, any>): FormData {
+  const formData = new FormData();
+  
+  Object.entries(data).forEach(([key, value]) => {
+    if (value instanceof File || value instanceof Blob) {
+      formData.append(key, value);
+    } else if (Array.isArray(value)) {
+      value.forEach((file) => {
+        if (file instanceof File || file instanceof Blob) {
+          formData.append(key, file);
+        }
+      });
+    } else if (value !== null && value !== undefined) {
+      formData.append(key, String(value));
+    }
+  });
+  
+  return formData;
 }

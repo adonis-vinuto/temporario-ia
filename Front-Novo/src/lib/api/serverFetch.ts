@@ -1,39 +1,45 @@
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "../auth";
+import { authOptions } from "@/lib/auth";
 
 export default async function serverFetch(
   url: string,
-  method?: string,
-  body?: object,
-  multipart: boolean = false,
-  params?: { [key: string]: string }
+  options?: {
+    method?: string;
+    body?: object;
+    multipart?: boolean;
+    params?: Record<string, string | string[]>;
+  }
 ) {
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.accessToken) {
+    throw new Error("Token de autenticação não encontrado");
+  }
+  
   const apiUrl = new URL(`${process.env.API_URL}${url}`);
-
-  if (params) {
-    Object.keys(params).forEach((key) => {
-      if (Array.isArray(params[key])) {
-        (params[key] as unknown as string[]).forEach((value) => {
-          apiUrl.searchParams.append(key, value);
-        });
+  
+  if (options?.params) {
+    Object.entries(options.params).forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+        value.forEach(v => apiUrl.searchParams.append(key, v));
       } else {
-        apiUrl.searchParams.append(key, params[key] as string);
+        apiUrl.searchParams.append(key, value);
       }
     });
   }
-
+  
   const res = await fetch(apiUrl.toString(), {
-    method: method ?? "GET",
+    method: options?.method ?? "GET",
     headers: {
-      Authorization: `Bearer ${
-        (
-          await getServerSession(authOptions)
-        )?.accessToken
-      }`,
-      ...(multipart ? {} : { "Content-Type": "application/json" }),
+      Authorization: `Bearer ${session.accessToken}`,
+      ...(options?.multipart ? {} : { "Content-Type": "application/json" }),
     },
-    body: multipart ? (body as BodyInit) : JSON.stringify(body),
+    body: options?.multipart 
+      ? (options.body as BodyInit) 
+      : options?.body 
+        ? JSON.stringify(options.body)
+        : undefined,
   });
-
+  
   return res;
 }
