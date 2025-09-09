@@ -1,33 +1,59 @@
-import { getToken } from "next-auth/jwt";
+import { withAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
 
-const SESSION_TOLERANCE = 5 * 1000;
-
-export async function middleware(req: NextRequest) {
-  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-
-  const path = req.nextUrl.pathname;
-  const protectedPaths = ["/dashboard", "/agents", "/users"];
-  const isProtectedPath = protectedPaths.some((p) => path.startsWith(p));
-
-  if (!isProtectedPath) {
+// Usa o middleware do NextAuth para verificação robusta
+export default withAuth(
+  function middleware(req) {
+    console.log("[Middleware] Token:", req.nextauth.token ? "Válido" : "Inválido");
+    console.log("[Middleware] Path:", req.nextUrl.pathname);
     return NextResponse.next();
+  },
+  {
+    callbacks: {
+      // Só autoriza se tiver token válido
+      authorized: ({ token, req }) => {
+        const path = req.nextUrl.pathname;
+        
+        // Log para debug
+        console.log("[Middleware Auth Check]", {
+          path,
+          hasToken: !!token,
+          tokenExp: token?.exp ? new Date(Number(token.exp) * 1000).toISOString() : null,
+        });
+        
+        // Se não tem token, não autoriza
+        if (!token) {
+          console.log("[Middleware] Sem token, bloqueando acesso");
+          return false;
+        }
+        
+        // Verifica se o token está expirado
+        if (token.exp && Date.now() >= Number(token.exp) * 1000) {
+          console.log("[Middleware] Token expirado, bloqueando acesso");
+          return false;
+        }
+        
+        // Token válido
+        return true;
+      },
+    },
+    pages: {
+      signIn: "/login",
+      error: "/login",
+    },
   }
+);
 
-  if (!token) {
-    return NextResponse.redirect(new URL("/login", req.url));
-  }
-
-  if (token.exp) {
-    const sessionExp = Number(token.exp) * 1000;
-    if (Date.now() > sessionExp - SESSION_TOLERANCE) {
-      return NextResponse.redirect(new URL("/login", req.url));
-    }
-  }
-  return NextResponse.next();
-}
-
+// Configuração de quais rotas o middleware deve proteger
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  matcher: [
+    // Protege todas as rotas dentro de (app)
+    "/dashboard/:path*",
+    "/agents/:path*",
+    "/users/:path*",
+    "/files/:path*",
+    "/knowledges/:path*",
+    "/integrations/:path*",
+    "/settings/:path*",
+  ],
 };

@@ -1,0 +1,104 @@
+"use client";
+
+import { LogOut } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { signOut } from "next-auth/react";
+import logout from "@/lib/utils/logout";
+import { useState } from "react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+
+interface LogoutButtonProps {
+  showText?: boolean;
+  variant?: "ghost" | "outline" | "default" | "destructive" | "secondary" | "link";
+  size?: "default" | "sm" | "lg" | "icon";
+  className?: string;
+}
+
+export function LogoutButton({ 
+  showText = true, 
+  variant = "ghost", 
+  size = "sm",
+  className = ""
+}: LogoutButtonProps) {
+  const [showDialog, setShowDialog] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    
+    try {
+      // Limpa dados locais
+      if (typeof window !== 'undefined') {
+        localStorage.clear();
+        sessionStorage.clear();
+        
+        // Remove cookies acessíveis do cliente
+        document.cookie.split(";").forEach((c) => {
+          document.cookie = c
+            .replace(/^ +/, "")
+            .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+        });
+      }
+      
+      // Chama server action para logout no Keycloak
+      await logout();
+      
+      // Faz logout do NextAuth
+      await signOut({ redirect: false });
+      
+      // Force reload para limpar cache
+      window.location.replace("/login");
+      
+    } catch (error) {
+      console.error("Erro durante o logout:", error);
+      window.location.replace("/login");
+    }
+  };
+
+  return (
+    <>
+      <Button
+        variant={variant}
+        size={size}
+        className={`${showText ? 'justify-start' : ''} text-destructive hover:text-destructive hover:bg-destructive/10 ${className}`}
+        onClick={() => setShowDialog(true)}
+        disabled={isLoggingOut}
+      >
+        <LogOut className={showText ? "mr-2 h-4 w-4" : "h-4 w-4"} />
+        {showText && (isLoggingOut ? "Saindo..." : "Sair")}
+      </Button>
+
+      <AlertDialog open={showDialog} onOpenChange={setShowDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmar saída</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza de que deseja sair? Você será redirecionado para a página de login.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isLoggingOut}>
+              Cancelar
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleLogout}
+              disabled={isLoggingOut}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {isLoggingOut ? "Saindo..." : "Sair"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  );
+}
