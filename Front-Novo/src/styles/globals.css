@@ -6,10 +6,13 @@
 @theme {
 
   --color-background: #f0f9ff;
-  --color-foreground: #0c4a6e;
+  --color-foreground: #007AA5;
+
+  --color-primary: #007AA5;
+  --color-primary-foreground: #ffffff;
 
   --color-card: #ffffff;
-  --color-card-foreground: #0c4a6e;
+  --color-card-foreground: #007AA5;
 
   --color-muted: #64748b;
   --color-accent: #00AFEF;
@@ -18,6 +21,8 @@
   --color-danger: #ef4444;
   --color-warning: #f59e0b;
   --color-success: #10b981;
+
+  --gradient-primary: linear-gradient(135deg, #00AFEF, #007AA5);
 
   --radius: 0.5rem;
 }

@@ -30,6 +30,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { LogoutButton } from "@/components/logout-button";
+import { SidebarToggle } from "@/components/sidebar-toggle";
 
 // Itens do menu principal
 const menuItems = [
@@ -75,23 +76,27 @@ export function AppSidebar() {
   const pathname = usePathname();
   const { data: session, status } = useSession();
   const { open } = useSidebar();
+  const userName = status === "loading" ? "Carregando..." : session?.user?.name || "Usuário";
+  const userEmail = status === "loading" ? "..." : session?.user?.email || "email@exemplo.com";
+  const userInitial = session?.user?.name?.charAt(0)?.toUpperCase() || "U";
 
   return (
     <TooltipProvider delayDuration={0}>
       <Sidebar collapsible="icon">
-        {/* Header com Logo e Nome */}
-        <SidebarHeader className="border-b">
+        {/* Header com Logo, Nome e Botão de Colapso */}
+        <SidebarHeader className="relative border-b bg-gradient-primary text-white">
           <div className="flex items-center gap-3 px-3 py-4">
-            <div className="h-10 w-10 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-bold shrink-0">
+            <div className="h-10 w-10 rounded-lg bg-white/20 flex items-center justify-center font-bold shrink-0">
               K
             </div>
             {open && (
               <div className="flex flex-col overflow-hidden">
                 <span className="text-lg font-bold">KOMVOS</span>
-                <span className="text-sm text-muted-foreground">MIND</span>
+                <span className="text-sm opacity-80">MIND</span>
               </div>
             )}
           </div>
+          <SidebarToggle className="absolute -right-3 top-2 text-white hover:bg-white/10" />
         </SidebarHeader>
 
         {/* Conteúdo Principal - Menu de Navegação */}
@@ -155,49 +160,47 @@ export function AppSidebar() {
         </SidebarContent>
 
         {/* Footer com Informações do Usuário */}
-        <SidebarFooter className="border-t">
-          <div className={`${open ? 'p-4' : 'p-2'}`}>
+        <SidebarFooter className="border-t bg-gradient-primary text-white">
+          <div className={open ? "p-4" : "p-2"}>
             {open ? (
-              <>
-                {/* Informações do usuário - visível quando expandido */}
-                <div className="flex flex-col gap-2 mb-3">
-                  <span className="text-sm font-medium truncate">
-                    {status === "loading" ? "Carregando..." : session?.user?.name || "Usuário"}
-                  </span>
-                  <span className="text-xs text-muted-foreground truncate">
-                    {status === "loading" ? "..." : session?.user?.email || "email@exemplo.com"}
-                  </span>
+              <div className="flex items-center gap-3">
+                <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center text-sm font-medium">
+                  {userInitial}
                 </div>
-                
-                {/* Botão de Logout com texto */}
-                <LogoutButton 
-                  showText={true}
+                <div className="flex flex-col overflow-hidden">
+                  <span className="text-sm font-medium truncate">{userName}</span>
+                  <span className="text-xs opacity-80 truncate">{userEmail}</span>
+                </div>
+                <LogoutButton
+                  showText={false}
                   variant="ghost"
-                  size="sm"
-                  className="w-full"
+                  size="icon"
+                  className="ml-auto h-8 w-8 text-white hover:bg-white/10"
                 />
-              </>
+              </div>
             ) : (
-              /* Quando colapsado, mostra apenas o botão de logout com tooltip */
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div className="flex justify-center">
-                    <LogoutButton 
+              <div className="flex flex-col items-center gap-2">
+                <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center text-sm font-medium">
+                  {userInitial}
+                </div>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <LogoutButton
                       showText={false}
                       variant="ghost"
                       size="icon"
-                      className="h-10 w-10"
+                      className="h-8 w-8 text-white hover:bg-white/10"
                     />
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent side="right">
-                  <div className="text-xs">
-                    <div className="font-medium">{session?.user?.name || "Usuário"}</div>
-                    <div className="text-muted-foreground">{session?.user?.email || "email@exemplo.com"}</div>
-                    <div className="mt-1 text-destructive">Clique para sair</div>
-                  </div>
-                </TooltipContent>
-              </Tooltip>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">
+                    <div className="text-xs">
+                      <div className="font-medium">{userName}</div>
+                      <div className="text-muted-foreground">{userEmail}</div>
+                      <div className="mt-1 text-destructive">Clique para sair</div>
+                    </div>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
             )}
           </div>
         </SidebarFooter>
