@@ -9,7 +9,6 @@ export default async function logout(): Promise<boolean> {
   try {
     const session = await getServerSession(authOptions);
     
-    // Tenta fazer logout no Keycloak se tiver refresh_token
     if (session?.refresh_token) {
       try {
         const res = await fetch(
@@ -27,16 +26,12 @@ export default async function logout(): Promise<boolean> {
           }
         );
         
-        console.log("Logout Keycloak status:", res.ok);
-      } catch (error) {
-        console.error("Erro ao fazer logout no Keycloak:", error);
+      } catch  {
       }
     }
     
-    // Limpa cookies do NextAuth manualmente
     const cookieStore = await cookies();
     
-    // Lista todos os possíveis cookies do NextAuth
     const authCookies = [
       "next-auth.session-token",
       "__Secure-next-auth.session-token",
@@ -46,21 +41,17 @@ export default async function logout(): Promise<boolean> {
       "__Secure-next-auth.callback-url",
     ];
     
-    // Remove cada cookie com diferentes configurações
     authCookies.forEach(cookieName => {
-      // Tenta deletar com diferentes paths
       cookieStore.delete({
         name: cookieName,
         path: "/",
       });
     });
     
-    // Invalida o cache das páginas
     revalidatePath("/", "layout");
     
     return true;
-  } catch (error) {
-    console.error("Erro no logout:", error);
+  } catch {
     return false;
   }
 }

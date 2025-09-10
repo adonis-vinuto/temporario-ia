@@ -36,12 +36,10 @@ export function LogoutButton({
     setIsLoggingOut(true);
     
     try {
-      // Limpa dados locais
       if (typeof window !== 'undefined') {
         localStorage.clear();
         sessionStorage.clear();
         
-        // Remove cookies acessíveis do cliente
         document.cookie.split(";").forEach((c) => {
           document.cookie = c
             .replace(/^ +/, "")
@@ -49,17 +47,13 @@ export function LogoutButton({
         });
       }
       
-      // Chama server action para logout no Keycloak
       await logout();
       
-      // Faz logout do NextAuth
       await signOut({ redirect: false });
       
-      // Force reload para limpar cache
       window.location.replace("/login");
       
-    } catch (error) {
-      console.error("Erro durante o logout:", error);
+    } catch {
       window.location.replace("/login");
     }
   };

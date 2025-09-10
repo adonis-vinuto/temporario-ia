@@ -3,5 +3,5 @@
 import UnderConstruction from "@/components/under-construction";
 
 export default function Page() {
-  return <UnderConstruction title="Agentes" />;
+  return <UnderConstruction title="Integrações" />;
 }
