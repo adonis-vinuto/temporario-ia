@@ -11,7 +11,7 @@ export default async function logout(): Promise<boolean> {
     
     if (session?.refresh_token) {
       try {
-        const res = await fetch(
+        await fetch(
           `${process.env.KEYCLOAK_BASE_URL}/realms/${process.env.KEYCLOAK_REALM}/protocol/openid-connect/logout`,
           {
             method: "POST",
