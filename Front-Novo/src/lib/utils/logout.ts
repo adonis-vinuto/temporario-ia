@@ -1,3 +1,4 @@
+// src\lib\utils\logout.ts
 "use server";
 
 import { getServerSession } from "next-auth";

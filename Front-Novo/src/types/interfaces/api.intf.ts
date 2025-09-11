@@ -1,3 +1,4 @@
+// src\types\interfaces\api.intf.ts
 export interface IApiResponse {
   [key: string]: unknown;
 }

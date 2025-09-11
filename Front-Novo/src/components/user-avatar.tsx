@@ -1,10 +1,11 @@
+// src\components\user-avatar.tsx
 "use client";
 
 import * as React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 
-type UserAvatarProps = {
+interface IUserAvatarProps {
   name?: string | null;
   image?: string | null;
   size?: number;
@@ -33,7 +34,7 @@ export function UserAvatar({
   bgClassName = "bg-white",
   textClassName = "text-[#007AA5]",
   ring = true,
-}: UserAvatarProps) {
+}: IUserAvatarProps) {
   const style = { width: size, height: size } as React.CSSProperties;
 
   return (

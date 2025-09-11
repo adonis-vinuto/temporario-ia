@@ -1,3 +1,4 @@
+// src\lib\api\server-fetch.ts
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth";
 import { env } from "@/lib/env";
@@ -9,7 +10,6 @@ export default async function serverFetch<T = unknown>(
   multipart: boolean = false,
   params?: { [key: string]: string }
 ): Promise<T> {
-  console.log("API_URL (env):", env.API_URL);
   const apiUrl = new URL(`${env.API_URL}${url}`);
 
   if (params) {
@@ -23,7 +23,6 @@ export default async function serverFetch<T = unknown>(
       }
     });
   }
-
   const res = await fetch(apiUrl.toString(), {
     method,
     headers: {
@@ -32,10 +31,8 @@ export default async function serverFetch<T = unknown>(
     },
     body: multipart ? (body as BodyInit) : body ? JSON.stringify(body) : undefined,
   });
-
   if (!res.ok) {
     throw new Error(`HTTP ${res.status}: ${await res.text()}`);
   }
-
   return (await res.json()) as T;
 }

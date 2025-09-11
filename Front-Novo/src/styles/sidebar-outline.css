@@ -1,3 +1,4 @@
+/* src/styles/sidebar-outline.css */
 .sidebar-outline-button {
   position: relative;
   overflow: visible;
@@ -18,7 +19,6 @@
   stroke-width: 1;
   rx: 0;
   ry: 0;
-
   stroke-dasharray: 280;
   stroke-dashoffset: 600;
   opacity: 0;
@@ -34,7 +34,6 @@
   opacity: 1;
   filter: drop-shadow(0 2px 4px rgba(255, 255, 255, 0.25));
 }
-
 
 .sidebar-outline-button::after {
   content: "";
@@ -58,4 +57,3 @@
   width: 0%;
   transform: translateY(-100%);
 }
-

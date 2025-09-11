@@ -1,9 +1,8 @@
 // src/app/api/data-config/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import serverFetch from "@/lib/api/server-fetch";
-import { DataConfig } from "@/types/interfaces/data-config";
+import { DataConfig } from "@/types/interfaces/data-config.intf";
 
-// Lista (normalmente 0..1)
 export async function GET() {
   try {
     const data = await serverFetch<DataConfig[]>("/api/data-config", "GET");
@@ -15,7 +14,6 @@ export async function GET() {
   }
 }
 
-// Cria (retorna 1 objeto)
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -28,7 +26,6 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// Atualiza (retorna 1 objeto)
 export async function PUT(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);

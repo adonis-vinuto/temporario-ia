@@ -1,3 +1,4 @@
+// src\types\interfaces\auth.intf.ts
 import { JWT } from "next-auth/jwt";
 
 export interface IAuthUser {

@@ -1,3 +1,4 @@
+// src\app\(app)\_components\sidebar\logout-button.tsx
 "use client";
 
 import { LogOut } from "lucide-react";
@@ -15,44 +16,32 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-
-interface LogoutButtonProps {
-  showText?: boolean;
-  variant?: "ghost" | "outline" | "default" | "destructive" | "secondary" | "link";
-  size?: "default" | "sm" | "lg" | "icon";
-  className?: string;
-}
+import { ILogoutButtonProps } from "@/types/interfaces/sidebar.intf";
 
 export function LogoutButton({ 
   showText = true, 
   variant = "ghost", 
   size = "sm",
   className = ""
-}: LogoutButtonProps) {
+}: ILogoutButtonProps) {
   const [showDialog, setShowDialog] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
-    
     try {
       if (typeof window !== 'undefined') {
         localStorage.clear();
         sessionStorage.clear();
-        
         document.cookie.split(";").forEach((c) => {
           document.cookie = c
             .replace(/^ +/, "")
             .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
         });
       }
-      
       await logout();
-      
       await signOut({ redirect: false });
-      
       window.location.replace("/login");
-      
     } catch {
       window.location.replace("/login");
     }
@@ -70,7 +59,6 @@ export function LogoutButton({
         <LogOut className={showText ? "mr-2 h-4 w-4" : "h-4 w-4"} />
         {showText && (isLoggingOut ? "Saindo..." : "Sair")}
       </Button>
-
       <AlertDialog open={showDialog} onOpenChange={setShowDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>

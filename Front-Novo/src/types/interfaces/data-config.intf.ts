@@ -11,7 +11,6 @@ export interface DataConfig {
   blobContainerName?: string;
 }
 
-// 👇 tipo genérico de paginação
 export interface Paginated<T> {
   totalPaginas: number;
   totalItens: number;

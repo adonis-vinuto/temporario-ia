@@ -1,3 +1,4 @@
+/* src/styles/globals.css */
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -42,6 +43,7 @@
 
   --sidebar-border: #0E88B6;
   --sidebar-ring: #00AFEF;
+  
 }
 
 .dark {
@@ -76,4 +78,3 @@
   background-color: var(--color-background);
   color: var(--color-foreground);
 }
-

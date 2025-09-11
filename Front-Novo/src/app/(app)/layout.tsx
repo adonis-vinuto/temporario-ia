@@ -1,9 +1,9 @@
+// src\app\(app)\layout.tsx
 import type { Metadata } from "next";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/app/(app)/_components/app-sidebar";
 import { cn } from "@/lib/utils";
 import { Inter } from "next/font/google";
-
 
 import "@/styles/globals.css";
 import "@/styles/sidebar-outline.css";
@@ -35,7 +35,9 @@ export default function RootLayout({
         <div className="h-screen flex overflow-hidden">
           <SidebarProvider>
             <AppSidebar />
-            <main className="flex-1 overflow-y-auto">{children}</main>
+            <main className="flex-1 overflow-y-auto">
+              {children}
+            </main>
           </SidebarProvider>
         </div>
       </body>

@@ -1,3 +1,4 @@
+// src\app\layout.tsx
 import type { Metadata, Viewport } from "next"
 import { Inter } from "next/font/google"
 import "@/styles/globals.css"
@@ -16,7 +17,7 @@ export const metadata: Metadata = {
   ),
   title: {
     default: "Komvos Mind - Plataforma Inteligente de Agentes Empresariais",
-    template: "%s | Komvos Mind",
+    template: "%s aa | Komvos Mind",
   },
   description:
     "Gerencie agentes empresariais, automatize processos e transforme sua operação com IA avançada",
@@ -69,7 +70,6 @@ export default function RootLayout({
           inter.variable
         )}
       >
-
         <div id="toast-container" />
         <Providers>{children}</Providers>
       </body>

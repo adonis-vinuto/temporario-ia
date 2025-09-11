@@ -1,3 +1,4 @@
+// src\components\sidebar-toggle.tsx
 "use client";
 
 import { useEffect } from "react";
@@ -9,7 +10,7 @@ import { cn } from "@/lib/utils";
 
 export function SidebarToggle() {
   const { open, toggleSidebar } = useSidebar();
-
+  
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const isCmd = e.metaKey && !e.ctrlKey;

@@ -1,3 +1,4 @@
+// src\lib\api\client-fetch.ts
 "use client";
 
 import { getSession } from "next-auth/react";
@@ -17,18 +18,11 @@ export default async function clientFetch(
       },
       body: JSON.stringify(body),
     });
-
     if (!res.ok) {
       throw new Error(`HTTP error! Status: ${res.status}`);
     }
-
     return res.json();
-  } catch (error) {
-    console.error(
-      `Erro ao buscar dados: ${
-        error instanceof Error ? error.message : "Erro desconhecido"
-      }`
-    );
+  } catch {
   }
 }
 
@@ -38,24 +32,17 @@ export async function clientFetchMultipart(
   body?: BodyInit
 ) {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${url}`, {
+    const res = await fetch(`${env.API_URL}${url}`, {
       method: method ?? "GET",
       headers: {
         Authorization: `Bearer ${(await getSession())?.accessToken}`,
       },
       body: body,
     });
-
     if (!res.ok) {
       throw new Error(`HTTP error! Status: ${res.status}`);
     }
-
     return res.json();
-  } catch (error) {
-    console.error(
-      `Erro ao buscar dados: ${
-        error instanceof Error ? error.message : "Erro desconhecido"
-      }`
-    );
+  } catch {
   }
 }

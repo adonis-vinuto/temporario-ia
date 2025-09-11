@@ -1,3 +1,4 @@
+// src\app\(app)\knowledge\page.tsx
 "use client";
 
 import UnderConstruction from "@/components/under-construction";

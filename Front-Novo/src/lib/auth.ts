@@ -1,6 +1,7 @@
+// src\lib\auth.ts
 import { NextAuthOptions } from "next-auth";
 import KeycloakProvider from "next-auth/providers/keycloak";
-import type { ICustomJWT, IKeycloakTokenResponse } from "@/types";
+import type { ICustomJWT, IKeycloakTokenResponse } from "@/types/interfaces/auth.intf";
 
 async function refreshAccessToken(token: ICustomJWT): Promise<ICustomJWT> {
   try {

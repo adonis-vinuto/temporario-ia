@@ -1,3 +1,4 @@
+// src\types\enums\module.ts
 export enum Module {
   People = "people",
   Sales = "sales",
