@@ -7,14 +7,14 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { useConfig } from '@/lib/providers/config-provider';
 import { getToastMessage } from '@/lib/utils/error-parser';
-import { TDataConfig, DataConfigCreateSchema, TDataConfigCreate } from '@/types/schemas/data-config.schema';
+import { DataConfig, DataConfigCreateSchema, DataConfigCreate } from '@/types/schemas/data-config.schema';
 import {
   createDataConfig,
   getDataConfig,
   updateDataConfig,
-} from '@/lib/api/data-config';
+} from '@/lib/api/data-config.client';
 
-export type FormData = TDataConfigCreate;
+export type FormData = DataConfigCreate;
 
 export function useSettingsPage() {
   const router = useRouter();
@@ -29,7 +29,7 @@ export function useSettingsPage() {
     retry: 1,
   });
 
-  const existing: TDataConfig | null = data ?? null;
+  const existing: DataConfig | null = data ?? null;
 
   const form = useForm<FormData>({
     resolver: zodResolver(DataConfigCreateSchema),

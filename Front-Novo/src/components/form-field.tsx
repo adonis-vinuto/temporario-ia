@@ -25,7 +25,7 @@ export function FormField({
         {...register}
         type={type}
         placeholder={placeholder}
-        className='text-foreground/50'
+        className='text-foreground/70 placeholder:text-foreground/40'
       />
       {error && (
         <p className="text-xs text-red-500">{error}</p>

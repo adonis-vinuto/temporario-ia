@@ -4,7 +4,7 @@
 import { createContext, useContext, useEffect, useState, useMemo } from 'react';
 import { usePathname } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
-import { getDataConfig } from '@/lib/api/data-config';
+import { getDataConfig } from '@/lib/api/data-config.client';
 import { ConfigRequiredModal } from '@/components/config-required-modal';
 
 interface ConfigContextType {

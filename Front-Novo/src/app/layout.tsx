@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   ),
   title: {
     default: "Komvos Mind - Plataforma Inteligente de Agentes Empresariais",
-    template: "%s aa | Komvos Mind",
+    template: "%s | Statum | Komvos Mind",
   },
   description:
     "Gerencie agentes empresariais, automatize processos e transforme sua operação com IA avançada",

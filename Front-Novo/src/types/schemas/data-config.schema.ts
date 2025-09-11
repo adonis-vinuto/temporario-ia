@@ -9,8 +9,8 @@ export const DataConfigSchema = z.object({
   sqlUser: z.string().min(1, "Usuário SQL é obrigatório"),
   sqlPassword: z.string().min(1, "Senha SQL é obrigatória"),
   sqlDatabase: z.string().min(1, "Banco de dados SQL é obrigatório"),
-  blobConnectionString: z.string().optional(),
-  blobContainerName: z.string().optional(),
+  blobConnectionString: z.string().nullable(),
+  blobContainerName: z.string().nullable(),
 });
 
 export const DataConfigCreateSchema = z.object({
@@ -19,9 +19,9 @@ export const DataConfigCreateSchema = z.object({
   sqlUser: z.string().min(1, "Usuário SQL é obrigatório"),
   sqlPassword: z.string().min(1, "Senha SQL é obrigatória"),
   sqlDatabase: z.string().min(1, "Banco de dados SQL é obrigatório"),
-  blobConnectionString: z.string().optional(),
-  blobContainerName: z.string().optional(),
+  blobConnectionString: z.string().nullable(),
+  blobContainerName: z.string().nullable(),
 });
 
-export type TDataConfig = z.infer<typeof DataConfigSchema>;
-export type TDataConfigCreate = z.infer<typeof DataConfigCreateSchema>;
+export type DataConfig = z.infer<typeof DataConfigSchema>;
+export type DataConfigCreate = z.infer<typeof DataConfigCreateSchema>;
